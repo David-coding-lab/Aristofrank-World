@@ -3,13 +3,24 @@
  * cannot be read from the browser; the request `Host` header is spoofable and
  * would opt the root layout into dynamic rendering. Set per environment.
  *
- * Normalizes a bare origin to a full URL: strips trailing slashes and prepends
- * https:// when the protocol was omitted.
+ * Normalizes a bare origin to a full URL: strips trailing slashes, prepends
+ * https:// when the protocol was omitted, and returns "" when the value does
+ * not parse as an http(s) origin (e.g. stray quotes or whitespace) so callers
+ * can fall back to a sane default.
  */
 function normalizeOrigin(value: string): string {
   const trimmed = value.trim().replace(/\/+$/, "")
   if (!trimmed) return ""
-  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  try {
+    const parsed = new URL(candidate)
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.origin
+    }
+  } catch {
+    // Not a parseable origin — leave it to the caller's fallbacks.
+  }
+  return ""
 }
 
 function resolveSiteUrl(): string {
