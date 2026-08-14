@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import { Playfair_Display, Open_Sans } from "next/font/google"
 import "material-symbols/outlined.css"
 import "./globals.css"
@@ -18,7 +19,6 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: {
     default: "Aristofrank World | Where Brands Become Legends",
     template: "%s | Aristofrank World",
@@ -40,6 +40,22 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   robots: { index: true, follow: true },
+}
+
+/**
+ * Resolves the deployment origin for absolute metadata URLs (og:image,
+ * canonical, etc.). Prefers the configured NEXT_PUBLIC_SITE_URL, then falls
+ * back to the request's Host header so previews never point at localhost.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  let metadataBase: URL | undefined
+  if (siteUrl) {
+    metadataBase = new URL(siteUrl)
+  } else {
+    const host = (await headers()).get("host")
+    if (host) metadataBase = new URL(`https://${host}`)
+  }
+  return metadataBase ? { metadataBase } : {}
 }
 
 export default function RootLayout({
