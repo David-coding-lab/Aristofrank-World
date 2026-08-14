@@ -18,30 +18,6 @@ const openSans = Open_Sans({
   variable: "--font-open-sans",
 })
 
-export const metadata: Metadata = {
-  title: {
-    default: "Aristofrank World | Where Brands Become Legends",
-    template: "%s | Aristofrank World",
-  },
-  description:
-    "Aristofrank World is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.",
-  icons: {
-    icon: { url: "/favicon.svg", type: "image/svg+xml" },
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_NG",
-    siteName: "Aristofrank World",
-    title: "Aristofrank World | Where Brands Become Legends",
-    description:
-      "A premium creative agency and artist management company helping brands and artists become legends.",
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-  robots: { index: true, follow: true },
-}
-
 /**
  * Resolves the deployment origin for absolute metadata URLs (og:image,
  * canonical, etc.). Prefers the configured NEXT_PUBLIC_SITE_URL, then falls
@@ -55,7 +31,31 @@ export async function generateMetadata(): Promise<Metadata> {
     const host = (await headers()).get("host")
     if (host) metadataBase = new URL(`https://${host}`)
   }
-  return metadataBase ? { metadataBase } : {}
+
+  return {
+    metadataBase,
+    title: {
+      default: "Aristofrank World | Where Brands Become Legends",
+      template: "%s | Aristofrank World",
+    },
+    description:
+      "Aristofrank World is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.",
+    icons: {
+      icon: { url: "/favicon.svg", type: "image/svg+xml" },
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_NG",
+      siteName: "Aristofrank World",
+      title: "Aristofrank World | Where Brands Become Legends",
+      description:
+        "A premium creative agency and artist management company helping brands and artists become legends.",
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+    robots: { index: true, follow: true },
+  }
 }
 
 export default function RootLayout({
