@@ -44,10 +44,11 @@ function resolveSiteUrl(): string {
     return vercelUrl
   }
 
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(
-      "NEXT_PUBLIC_SITE_URL is not set. Set it to this deployment's own origin."
-    )
+  if (process.env.NODE_ENV === "production" && !vercelUrl) {
+    // Providers other than Vercel (e.g. Appwrite open-runtimes) do not inject
+    // a deployment origin. Metadata is still emitted with relative og:image
+    // paths; consumers that need an absolute origin guard on `siteUrl`.
+    return ""
   }
 
   return "http://localhost:3000"

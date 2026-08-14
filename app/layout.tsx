@@ -18,7 +18,7 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: {
     default: "Aristofrank World | Where Brands Become Legends",
     template: "%s | Aristofrank World",
