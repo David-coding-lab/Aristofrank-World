@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-playfair: var(--font-playfair), serif;
+  --font-open-sans: var(--font-open-sans), sans-serif;
+}
+
+:root {
+  --color-primary: #181711;
+  --color-secondary: #FFFFFF;
+  --color-accent: #F2CC0D;
+  --color-background: #FFFFFF;
+  --color-surface: #F8F8FA;
+  --color-panel: #211E17;
+  --color-dark: #181711;
+  --color-muted: #6B7280;
+  --color-sand: #ACA790;
+  --color-error: #DC2626;
+  --color-border: #E5E7EB;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-panel: var(--color-panel);
+  --color-dark: var(--color-dark);
+  --color-muted: var(--color-muted);
+  --color-sand: var(--color-sand);
+  --color-error: var(--color-error);
+  --color-border: var(--color-border);
+  --font-heading: var(--font-playfair);
+  --font-body: var(--font-open-sans);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-dark);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), Georgia, serif;
+}
