@@ -2,24 +2,35 @@
  * Public origin of this deployment. Metadata is generated server-side, so this
  * cannot be read from the browser; the request `Host` header is spoofable and
  * would opt the root layout into dynamic rendering. Set per environment.
+ *
+ * Normalizes a bare origin to a full URL: strips trailing slashes and prepends
+ * https:// when the protocol was omitted.
  */
+function normalizeOrigin(value: string): string {
+  const trimmed = value.trim().replace(/\/+$/, "")
+  if (!trimmed) return ""
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+}
+
 function resolveSiteUrl(): string {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  const configured = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL ?? "")
 
   if (configured) {
-    return configured.replace(/\/+$/, "")
+    return configured
   }
 
   // Vercel injects per-deployment URLs for every build. Prefer the project's
   // stable production origin (NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL) over
   // the current deployment's VERCEL_URL, which can be a short-lived preview
   // URL even when building the production deployment.
-  const vercelUrl =
+  const vercelUrl = normalizeOrigin(
     process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
-    process.env.NEXT_PUBLIC_VERCEL_URL ??
-    process.env.VERCEL_URL
+      process.env.NEXT_PUBLIC_VERCEL_URL ??
+      process.env.VERCEL_URL ??
+      ""
+  )
   if (vercelUrl) {
-    return `https://${vercelUrl.replace(/^https?:\/\//, "")}`
+    return vercelUrl
   }
 
   if (process.env.NODE_ENV === "production") {
