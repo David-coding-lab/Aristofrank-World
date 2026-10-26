@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/features/layout/SiteHeader";
+import { SiteFooter } from "@/components/features/layout/SiteFooter";
 import CTASection from "@/components/ui/CTASection"
 import Image, { type StaticImageData } from "next/image";
 
@@ -21,7 +22,7 @@ export default function Services() {
                 <ServiceCard
                     serviceTitle="Creative Design"
                     serviceDescription="Our creative design services are the cornerstone of a
-legendary brand. We build visual identities that are not only beautiful but also strategically sound. ensuring every element tells your unique story."
+                    legendary brand. We build visual identities that are not only beautiful but also strategically sound. ensuring every element tells your unique story."
                     serviceIconUrl={DesignIcon}
                     serviceOffers={[
                         "Logo Design & Identity ",
@@ -71,7 +72,11 @@ legendary brand. We build visual identities that are not only beautiful but also
                 />
             </div>
 
-          <CTASection />
+          <div className="mb-5">
+            <CTASection />
+          </div>
+
+          <SiteFooter />
         </main> 
     </>
   )

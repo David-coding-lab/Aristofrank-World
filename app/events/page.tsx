@@ -21,7 +21,7 @@ function Events() {
             sm:text-4xl
             md:text-5xl
             mt-20
-            lg:text-[60px] lg:leading-[1.35]"
+            lg:text-[40px] lg:leading-[1.35]"
         > Upcoming Events and Dates</h3>
 
         <div className="mt-5 mb-10 ">
