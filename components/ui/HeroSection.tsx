@@ -22,7 +22,7 @@ function HeroSection({
         lg:min-h-123.75 lg:py-28
       "
       style={{
-        backgroundImage: "url('/assets/hero_bg.png')",
+        backgroundImage: "url('/hero_bg.png')",
       }}
     >
       {/* Background overlay */}
