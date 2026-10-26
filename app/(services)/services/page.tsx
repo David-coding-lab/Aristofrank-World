@@ -29,7 +29,7 @@ legendary brand. We build visual identities that are not only beautiful but also
                         "Digital Graphics & Social Media Assets",
                         "Print Media & Packaging"
                     ]}
-                    serviceLink="/services/creative-design"
+                    serviceLink="/creative-design"
                 />
 
                 <ServiceCard
@@ -41,7 +41,7 @@ legendary brand. We build visual identities that are not only beautiful but also
                         "Public Relations & Media Outreach",
                         "Event Promotion & Management",
                     ]}
-                    serviceLink="/services/promotions"
+                    serviceLink="/promotions"
                 />
 
                 <ServiceCard
@@ -54,7 +54,7 @@ legendary brand. We build visual identities that are not only beautiful but also
                         "Editing & Post-Production",
                         "Motion Graphics & Animation"
                     ]}
-                    serviceLink="/services/video-production"
+                    serviceLink="/video-production"
                 />
 
                 <ServiceCard
@@ -67,7 +67,7 @@ legendary brand. We build visual identities that are not only beautiful but also
                         "Mixing & Mastering",
                         "Jingles & Sonic Branding"
                     ]}
-                    serviceLink="/services/music-production"
+                    serviceLink="/music-production"
                 />
             </div>
 

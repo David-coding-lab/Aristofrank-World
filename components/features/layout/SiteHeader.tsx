@@ -17,7 +17,7 @@ const MENU_LINKS = [
   { label: "Services", href: "/services" },
   { label: "About Us", href: "/about-us" },
   { label: "Media", href: "/media" },
-  { label: "Event", href: "/event" },
+  { label: "Events", href: "/events" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact Us", href: "/contact-us" },
 ]

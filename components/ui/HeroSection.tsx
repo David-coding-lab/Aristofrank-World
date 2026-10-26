@@ -5,12 +5,14 @@ interface HeroSectionProps {
   ButtonLink?: string;
   HeroText: string;
   HeroSubText: string;
+  url?: string;
 }
 
 function HeroSection({
   ButtonLink,
   HeroText,
   HeroSubText,
+  url
 }: HeroSectionProps) {
   return (
     <section
@@ -58,9 +60,9 @@ function HeroSection({
           {HeroSubText}
         </p>
 
-        {ButtonLink && (
+        {ButtonLink && url && (
           <Link
-            href="/media"
+            href={url}
             className="
               mt-6 inline-flex items-center justify-center
               rounded-md bg-accent px-6 py-3
