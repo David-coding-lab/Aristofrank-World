@@ -9,16 +9,19 @@ import CTASection from '@/components/ui/CTASection'
 function CreativeDesign() {
     const ourStrategies =[
         {
+            id: 1,
             iconUrl: "/sparkle.png",
             cardTitle: "Strategic Branding",
             cardDescription: "Every choice is purposefully angled with your brands core strategy and long-term vision.",
         },
         {
+            id: 1,
             iconUrl: "/timer.png",
             cardTitle: "Timeless Aesthetics",
             cardDescription: "We create design that transcend trends, ensuring your brand remains relevant and powerful for years to come.",
         },
         {
+            id: 1,
             iconUrl: "/bolt.png",
             cardTitle: "Impact Results",
             cardDescription: "Our visual are created to resonate with your audience, drive engagement, and deliver measurable business outcomes.",
