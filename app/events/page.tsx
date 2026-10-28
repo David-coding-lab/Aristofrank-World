@@ -1,7 +1,7 @@
 import {SiteHeader} from '@/components/features/layout/SiteHeader'
 import {SiteFooter} from '@/components/features/layout/SiteFooter'
 import HeroSection from '@/components/ui/HeroSection'
-import EventCard from '@/components/features/events/EventCard.tsx'
+import EventCard from '@/components/features/events/EventCard'
 
 function Events() {
   return (
