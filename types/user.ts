@@ -3,5 +3,6 @@ export interface User {
   name: string
   email: string
   emailVerification: boolean
+  image?: string | null
   prefs: Record<string, string>
 }
