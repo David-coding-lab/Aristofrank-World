@@ -5,51 +5,43 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel";
 import { EyeIcon } from "@/components/features/auth/EyeIcon";
-import { signInAction, signInWithGoogleAction } from "@/lib/auth/actions";
+import { signInAction } from "@/lib/auth/actions";
+import { safeRedirectPath } from "@/lib/auth/redirects";
 import { signInSchema, fieldErrorsOf } from "@/lib/validations/auth";
 import type { FieldErrors } from "@/types";
 
 const PRIMARY = "#181711";
 const PRIMARY_FOCUS = "focus:ring-[#181711]";
 
-/**
- * Resolve the post-login destination from the `?redirect=` query param.
- * Only same-origin relative paths are honored — anything else (protocol-relative
- * `//host`, absolute URLs, empty) falls back to home to prevent open redirects.
- */
+/** Resolve the post-login destination from the `?redirect=` query param. */
 function safeRedirectTarget(): string {
   if (typeof window === "undefined") return "/";
   const raw = new URLSearchParams(window.location.search).get("redirect");
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/";
-  return raw;
+  return safeRedirectPath(raw);
 }
 
 const OAUTH_ERROR_MESSAGE = "Google sign-in didn't complete. Please try again.";
 
+function firstParam(
+  value: string | string[] | undefined,
+): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 /**
  * Interpret the `?error=` param the Google flow lands back with.
  *
- * On failure Appwrite overwrites our `error=oauth` marker with its own JSON
- * payload (e.g. `{"type":"user_oauth2_provider_error","code":424,...}`), so we
- * parse it here. A user who simply cancels the Google consent screen produces
- * an `access_denied` — that's not an error worth alarming them with, so we stay
- * silent. Anything else shows a single friendly message (never the raw JSON).
+ * The callback handles a cancelled consent screen silently. Any other failure
+ * shows one friendly message and never the raw provider payload.
  */
 function oauthErrorMessage(
   error: string | string[] | undefined,
 ): string | null {
-  const raw = Array.isArray(error) ? error[0] : error;
-  if (!raw) return null;
-
-  if (raw === "oauth") return OAUTH_ERROR_MESSAGE;
-
-  try {
-    const parsed = JSON.parse(raw) as { message?: string };
-    if (parsed.message?.includes("access_denied")) return null;
-    return OAUTH_ERROR_MESSAGE;
-  } catch {
-    return OAUTH_ERROR_MESSAGE;
-  }
+  const value = firstParam(error);
+  if (!value) return null;
+  return value === "rate_limit"
+    ? "Too many sign-in attempts. Please wait a few minutes and try again."
+    : OAUTH_ERROR_MESSAGE;
 }
 
 function FieldError({ message }: { message?: string }) {
@@ -62,7 +54,7 @@ export default function SignInPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { error } = use(searchParams);
+  const { error, verified, verify, reset, redirect } = use(searchParams);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -72,7 +64,20 @@ export default function SignInPage({
     oauthErrorMessage(error),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const googleRedirect = safeRedirectPath(firstParam(redirect));
+
+  const successMessage =
+    firstParam(verified) === "1"
+      ? "Email verified. You can log in now."
+      : firstParam(reset) === "1"
+        ? "Password updated. Log in with your new password."
+        : null;
+  const verificationError =
+    firstParam(verify) === "invalid"
+      ? "That verification link is invalid or has expired. Request a new one below."
+      : firstParam(verify) === "rate_limit"
+        ? "Too many verification attempts. Please wait a few minutes and try again."
+        : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,6 +108,10 @@ export default function SignInPage({
       if (result.reason === "invalid") {
         if (result.fieldErrors) setErrors(result.fieldErrors);
         setFormError("Incorrect email or password.");
+      } else if (result.reason === "rate_limit") {
+        setFormError(
+          "Too many attempts. Please wait a few minutes and try again.",
+        );
       } else {
         setFormError("Something went wrong. Please try again.");
       }
@@ -114,19 +123,7 @@ export default function SignInPage({
   };
 
   const handleForgotPassword = () => {
-    // TODO: wire up requestPasswordReset(email)
-  };
-
-  const handleGoogleLogin = async () => {
-    setFormError(null);
-    setIsGoogleSubmitting(true);
-    try {
-      // Redirects to Google's consent screen; only returns here on failure.
-      await signInWithGoogleAction(safeRedirectTarget());
-    } catch {
-      setFormError("Something went wrong. Please try again.");
-      setIsGoogleSubmitting(false);
-    }
+    router.push("/forgot-password");
   };
 
   const inputClass = (hasError: boolean) =>
@@ -168,14 +165,34 @@ export default function SignInPage({
               </p>
             )}
 
+            {successMessage && (
+              <p
+                role="status"
+                className="rounded-[10px] bg-green-50 px-4 py-3 text-sm text-green-700"
+              >
+                {successMessage}
+              </p>
+            )}
+
+            {verificationError && (
+              <p
+                role="alert"
+                className="rounded-[10px] bg-amber-50 px-4 py-3 text-sm text-amber-800"
+              >
+                {verificationError}
+              </p>
+            )}
+
             {/* Email */}
             <div>
               <input
                 type="email"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 autoComplete="email"
+                aria-label="Email"
                 className={inputClass(!!errors.email)}
               />
               <FieldError message={errors.email} />
@@ -188,10 +205,12 @@ export default function SignInPage({
               >
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
+                  aria-label="Password"
                   className="w-full bg-transparent px-4 text-[15px] text-[#666161] outline-none"
                 />
                 <EyeIcon
@@ -232,11 +251,9 @@ export default function SignInPage({
             </div>
 
             {/* Google */}
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              disabled={isGoogleSubmitting}
-              className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-60 sm:min-h-[50px]"
+            <a
+              href={`/api/auth/google?redirect=${encodeURIComponent(googleRedirect)}`}
+              className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:min-h-[50px]"
             >
               <svg className="h-5 w-5" viewBox="0 0 48 48">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -245,7 +262,7 @@ export default function SignInPage({
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
               </svg>
               Continue with Google
-            </button>
+            </a>
 
             {/* Terms */}
             <p className="text-center text-xs text-[#555252]">

@@ -1,7 +1,9 @@
+import "server-only"
+
 /**
- * Public origin of this deployment. Metadata is generated server-side, so this
- * cannot be read from the browser; the request `Host` header is spoofable and
- * would opt the root layout into dynamic rendering. Set per environment.
+ * Public origin of this deployment. Keep this in trusted configuration; the
+ * request `Host` header is spoofable and must not become the origin used for
+ * OAuth callbacks, email links, or canonical URLs. Set per environment.
  *
  * Normalizes a bare origin to a full URL: strips trailing slashes, prepends
  * https:// when the protocol was omitted, and returns "" when the value does
@@ -38,16 +40,16 @@ function resolveSiteUrl(): string {
     process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
       process.env.NEXT_PUBLIC_VERCEL_URL ??
       process.env.VERCEL_URL ??
-      ""
+      "",
   )
   if (vercelUrl) {
     return vercelUrl
   }
 
   if (process.env.NODE_ENV === "production" && !vercelUrl) {
-    // Providers other than Vercel (e.g. Appwrite open-runtimes) do not inject
-    // a deployment origin. Metadata is still emitted with relative og:image
-    // paths; consumers that need an absolute origin guard on `siteUrl`.
+    // Other hosts do not inject a deployment origin. Metadata is still emitted
+    // with relative og:image paths; consumers that need an absolute origin
+    // guard on `siteUrl`.
     return ""
   }
 
@@ -56,13 +58,24 @@ function resolveSiteUrl(): string {
 
 export const siteUrl = resolveSiteUrl()
 
+const googleRedirectUri =
+  process.env.GOOGLE_REDIRECT_URI?.trim() ||
+  (siteUrl ? `${siteUrl}/api/auth/google/callback` : "")
+
 export const env = {
   siteUrl,
-  appwrite: {
-    endpoint: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!,
-    projectId: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!,
-    databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-    verifyRedirectUrl: process.env.NEXT_PUBLIC_APPWRITE_VERIFY_REDIRECT_URL!,
-    resetRedirectUrl: process.env.NEXT_PUBLIC_APPWRITE_RESET_REDIRECT_URL!,
+  databaseUrl: process.env.DATABASE_URL ?? "",
+  email: {
+    apiKey: process.env.RESEND_API_KEY ?? "",
+    from: process.env.EMAIL_FROM ?? "",
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    redirectUri: googleRedirectUri,
   },
 } as const
+
+export function hasEmailConfig(): boolean {
+  return Boolean(env.siteUrl && env.email.apiKey && env.email.from)
+}

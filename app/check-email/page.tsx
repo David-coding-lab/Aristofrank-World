@@ -30,12 +30,12 @@ export default function CheckEmailPage() {
         </h1>
 
         <p className="mt-3 text-sm text-[#555252] sm:text-base">
-          We&apos;ve sent a verification link to your inbox. Click the link to
-          verify your account, then sign in to continue.
+          If you&apos;re creating a new account, check your inbox for a
+          verification link. If you already have an account, sign in instead.
         </p>
 
         <p className="mt-2 text-xs text-[#888484] sm:text-sm">
-          Check your spam folder if it&apos;s not in your inbox.
+          Check your spam folder if the email hasn&apos;t arrived.
         </p>
 
         <ResendVerification />
