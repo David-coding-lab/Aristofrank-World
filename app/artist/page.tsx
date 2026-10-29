@@ -2,7 +2,6 @@ import {SiteHeader} from '@/components/features/layout/SiteHeader'
 import {SiteFooter} from '@/components/features/layout/SiteFooter'
 import LoadMoreArtists from '@/components/features/artist/LoadMoreArtists'
 import NavLinks from '@/components/ui/NavLinks'
-import Link from 'next/link'
 
 function Artists() {
    
