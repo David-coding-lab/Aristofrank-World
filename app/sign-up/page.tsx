@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel";
 import { EyeIcon } from "@/components/features/auth/EyeIcon";
-import { signUpAction, signInWithGoogleAction } from "@/lib/auth/actions";
+import { signUpAction } from "@/lib/auth/actions";
 import { signUpSchema, fieldErrorsOf } from "@/lib/validations/auth";
 import type { FieldErrors } from "@/types";
 
@@ -32,7 +32,6 @@ export default function SignUpPage() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,8 +58,8 @@ export default function SignUpPage() {
         return;
       }
 
-      if (result.reason === "exists") {
-        setErrors({ email: "An account with this email already exists" });
+      if (result.reason === "rate_limit") {
+        setFormError("Too many sign-up attempts. Please try again later.");
       } else if (result.reason === "invalid") {
         if (result.fieldErrors) setErrors(result.fieldErrors);
         setFormError("Please check your details and try again.");
@@ -72,19 +71,6 @@ export default function SignUpPage() {
         setFormError("Something went wrong. Please try again.");
     } finally {
         setIsSubmitting(false);
-    }
-  };
-
-  const handleGoogleSignUp = async () => {
-    setFormError(null);
-    setIsGoogleSubmitting(true);
-    try {
-      // Same flow as sign-in: Google accounts are created on first OAuth login,
-      // already verified. Redirects to the consent screen; returns only on failure.
-      await signInWithGoogleAction();
-    } catch {
-      setFormError("Something went wrong. Please try again.");
-      setIsGoogleSubmitting(false);
     }
   };
 
@@ -131,10 +117,12 @@ export default function SignUpPage() {
           <div>
             <input
               type="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               autoComplete="email"
+              aria-label="Email"
               className={inputBase(!!errors.email)}
             />
             <FieldError message={errors.email} />
@@ -144,10 +132,12 @@ export default function SignUpPage() {
           <div>
             <input
               type="text"
+              name="name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username"
-              autoComplete="username"
+              autoComplete="name"
+              aria-label="Username"
               className={inputBase(!!errors.name)}
             />
             <FieldError message={errors.name} />
@@ -160,10 +150,12 @@ export default function SignUpPage() {
             >
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Create password"
                 autoComplete="new-password"
+                aria-label="Password"
                 className="w-full bg-transparent px-4 text-[15px] text-[#666161] outline-none"
               />
               <EyeIcon
@@ -181,10 +173,12 @@ export default function SignUpPage() {
             >
               <input
                 type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm password"
                 autoComplete="new-password"
+                aria-label="Confirm password"
                 className="w-full bg-transparent px-4 text-[15px] text-[#666161] outline-none"
               />
               <EyeIcon
@@ -213,11 +207,9 @@ export default function SignUpPage() {
           </div>
 
           {/* Google */}
-          <button
-            type="button"
-            onClick={handleGoogleSignUp}
-            disabled={isGoogleSubmitting}
-            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-60 sm:min-h-[50px]"
+          <a
+            href="/api/auth/google"
+            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:min-h-[50px]"
           >
             <svg className="h-5 w-5" viewBox="0 0 48 48">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -226,7 +218,7 @@ export default function SignUpPage() {
               <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
             Continue with Google
-          </button>
+          </a>
 
           {/* Terms */}
           <p className="text-center text-xs text-[#555252]">

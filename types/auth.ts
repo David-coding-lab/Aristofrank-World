@@ -29,7 +29,7 @@ export type SignInResult =
   | { ok: true }
   | {
       ok: false
-      reason: "invalid" | "unverified" | "error"
+      reason: "invalid" | "unverified" | "rate_limit" | "error"
       fieldErrors?: FieldErrors
     }
 
@@ -38,14 +38,26 @@ export type SignUpResult =
   | { ok: true; verificationSent: true }
   | {
       ok: false
-      reason: "invalid" | "exists" | "error"
+      reason: "invalid" | "rate_limit" | "error"
       fieldErrors?: FieldErrors
     }
 
 /**
  * Result of `resendVerificationAction`. `expired` means the pending-verification
- * window lapsed; `rate_limit` means Appwrite is throttling resend attempts.
+ * window lapsed; `rate_limit` means the cooldown or IP throttle is active.
  */
 export type ResendResult =
   | { ok: true }
   | { ok: false; reason: "expired" | "rate_limit" | "error" }
+
+/** Password reset request always reports success to avoid email enumeration. */
+export type RequestPasswordResetResult = { ok: true }
+
+/** Result of `resetPasswordAction`. */
+export type ResetPasswordResult =
+  | { ok: true }
+  | {
+      ok: false
+      reason: "invalid" | "rate_limit" | "error"
+      fieldErrors?: FieldErrors
+    }

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { resendVerificationAction } from "@/lib/auth/actions"
 
 const PRIMARY = "#181711"
-const COOLDOWN_SECONDS = 30
+const COOLDOWN_SECONDS = 60
 
 type Feedback = { tone: "success" | "error"; text: string }
 
@@ -38,7 +38,7 @@ export function ResendVerification() {
       } else if (result.reason === "expired") {
         setFeedback({
           tone: "error",
-          text: "This link request expired. Please sign up again to get a new email.",
+          text: "This request expired. Sign in with your email and password to get a new verification email.",
         })
       } else {
         setFeedback({ tone: "error", text: "Couldn't resend. Please try again." })

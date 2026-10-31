@@ -6,9 +6,26 @@ import { z } from "zod"
  * trust the client: the server re-validates every field.
  */
 
+export const emailSchema = z
+  .string()
+  .trim()
+  .min(1, "Email is required")
+  .email("Enter a valid email")
+  .max(254, "Email is too long")
+
+/** bcrypt only reads the first 72 bytes; reject longer input instead of
+ * silently truncating it. TextEncoder works in both the browser and Node. */
+function withinBcryptLimit(value: string): boolean {
+  return new TextEncoder().encode(value).length <= 72
+}
+
 export const signInSchema = z.object({
-  email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
+  email: emailSchema,
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .max(72, "Password is too long")
+    .refine(withinBcryptLimit, "Password is too long"),
 })
 
 export const signUpSchema = z
@@ -18,9 +35,34 @@ export const signUpSchema = z
       .trim()
       .min(2, "Username must be at least 2 characters")
       .max(128, "Username is too long"),
-    email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    email: emailSchema,
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(72, "Password is too long")
+      .refine(withinBcryptLimit, "Password is too long"),
+    confirmPassword: z
+      .string()
+      .min(1, "Please confirm your password")
+      .max(72, "Password is too long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  })
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Reset token is missing").max(256),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(72, "Password is too long")
+      .refine(withinBcryptLimit, "Password is too long"),
+    confirmPassword: z
+      .string()
+      .min(1, "Please confirm your password")
+      .max(72, "Password is too long"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -29,6 +71,7 @@ export const signUpSchema = z
 
 export type SignInInput = z.infer<typeof signInSchema>
 export type SignUpInput = z.infer<typeof signUpSchema>
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
 /** Flatten a zod error into a `{ field: message }` map for form + action responses. */
 export function fieldErrorsOf(

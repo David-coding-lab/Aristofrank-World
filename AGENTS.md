@@ -16,15 +16,20 @@ add detail to code comments or docs, not here.
 - Next.js (App Router, Server Components by default)
 - TypeScript (strict mode — no `any` without a comment explaining why)
 - Tailwind CSS
-- npm (do not use yarn/pnpm lockfiles or commands)
-- Appwrite for authentication and backend services
+- pnpm (do not use npm/yarn lockfiles or commands)
+- PostgreSQL via Prisma; auth uses database sessions, email/password, email
+  verification, password reset, and Google OAuth
 
 ## Commands
 
-- Dev: `npm run dev`
-- Build: `npm run build`
-- Lint: `npm run lint`
-- Type check: `npx tsc --noEmit`
+- Dev: `pnpm dev`
+- Build: `pnpm build`
+- Lint: `pnpm lint`
+- Type check: `pnpm typecheck`
+- Apply migrations: `pnpm db:deploy`
+
+On Termux/Android, prefix local dev/build/type-check commands with
+`NEXT_TEST_WASM=1` and put Termux's Node binary first; see `README.md`.
 
 Run lint + type-check before considering any task done. Do not fix style issues
 a formatter would catch automatically — run the formatter instead.
@@ -42,9 +47,10 @@ components/
   ui/                   # small, reusable, presentational primitives (Button, Input, Card)
   features/<feature>/   # feature-specific components, colocated by domain
 lib/                    # framework-agnostic utilities, helpers, constants
-  auth/                 # Appwrite auth config, session helpers, server actions
+  auth/                 # sessions, tokens, email, OAuth, server actions
   validations/          # zod schemas
-  server/               # server-only Appwrite clients
+  prisma.ts             # Prisma client singleton
+prisma/                 # schema and PostgreSQL migrations
 hooks/                  # custom React hooks
 types/                  # shared TypeScript types/interfaces
 proxy.ts                # route protection (public vs protected) + redirects
@@ -60,8 +66,10 @@ proxy.ts                # route protection (public vs protected) + redirects
 
 - **Always ask the user whether a new route is public or protected before scaffolding it.**
   Never assume. If ambiguous from context, ask explicitly rather than guessing.
-- Protected routes live under the `(protected)` route group and are guarded by
-  `proxy.ts` (redirect-level) — do not write ad hoc per-page auth checks.
+- Protected routes live under the `(protected)` route group. `proxy.ts` handles
+  redirect-level checks for obvious unauthenticated requests, but it cannot query
+  Postgres. Every protected server page/layout must also call `getCurrentUser()`
+  and redirect when it returns `null`; do not trust cookie presence alone.
 - Server Components fetch data directly; only mark a component `"use client"` when it
   genuinely needs interactivity, state, or browser APIs. Default to Server Components.
 

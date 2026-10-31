@@ -6,5 +6,7 @@ export type {
   SignInResult,
   SignUpResult,
   ResendResult,
+  RequestPasswordResetResult,
+  ResetPasswordResult,
   FieldErrors,
 } from "./auth"

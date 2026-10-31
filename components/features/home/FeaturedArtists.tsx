@@ -3,7 +3,7 @@ import Link from "next/link"
 import { OutlinedCtaButton } from "@/components/ui/OutlinedCtaButton"
 
 /**
- * Placeholder artist portraits. Replace with real Appwrite/ImageKit artwork
+ * Placeholder artist portraits. Replace with real artist artwork
  * when the talent catalogue lands — keep the descriptive alt + sizes pattern.
  */
 const ARTISTS = [

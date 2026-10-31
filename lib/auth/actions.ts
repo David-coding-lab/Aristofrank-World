@@ -1,225 +1,474 @@
 "use server"
 
-import { ID, AppwriteException, OAuthProvider } from "node-appwrite"
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
+import { Prisma } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
+import { env, hasEmailConfig } from "@/lib/env"
 import {
-  createAdminClient,
-  createSessionClient,
-  setSessionCookie,
-  SESSION_COOKIE,
-  PENDING_COOKIE,
-} from "@/lib/server/appwrite"
-import { env } from "@/lib/env"
-import { signInSchema, signUpSchema, fieldErrorsOf } from "@/lib/validations/auth"
-import type { SignInResult, SignUpResult, ResendResult } from "@/types"
+  LOCKOUT_SECONDS,
+  MAX_LOGIN_ATTEMPTS,
+  RESEND_COOLDOWN_SECONDS,
+  RESET_TTL_SECONDS,
+  VERIFICATION_TTL_SECONDS,
+} from "./constants"
+import {
+  clearPendingVerificationCookie,
+  clearSessionCookie,
+  getPendingVerificationToken,
+  setPendingVerificationCookie,
+} from "./cookies"
+import { sendPasswordResetEmail, sendVerificationEmail } from "./email"
+import { normalizeEmail } from "./identity"
+import { logAuthError } from "./log"
+import { hashPassword, verifyPassword } from "./password"
+import {
+  AUTH_RATE_LIMIT_SCOPE,
+  AUTH_RATE_LIMITS,
+  clearAuthRateLimit,
+  consumeAuthRateLimit,
+} from "./rate-limit"
+import { currentRequestMeta } from "./request"
+import { createSession, destroyCurrentSession } from "./session"
+import { generateToken, hashToken } from "./tokens"
+import {
+  emailSchema,
+  fieldErrorsOf,
+  resetPasswordSchema,
+  signInSchema,
+  signUpSchema,
+  type ResetPasswordInput,
+  type SignInInput,
+  type SignUpInput,
+} from "@/lib/validations/auth"
+import type {
+  RequestPasswordResetResult,
+  ResetPasswordResult,
+  ResendResult,
+  SignInResult,
+  SignUpResult,
+} from "@/types"
 
-const isProduction = process.env.NODE_ENV === "production"
+const DUMMY_PASSWORD_HASH =
+  "$2b$12$qrLDIh2A8OVGwB5Y2cB0sONAwXhrHjJljZvE1iq12goqWPMEN8YQu"
 
-/**
- * Logs the real cause of an auth failure to the server console (dev terminal),
- * unpacking AppwriteException so you see the code, type, and message instead of
- * the vague result string the client receives.
- */
-function logAuthError(context: string, error: unknown): void {
-  if (error instanceof AppwriteException) {
-    console.error(
-      `[auth] ${context} failed:`,
-      `code=${error.code}`,
-      `type=${error.type}`,
-      `message=${error.message}`,
-    )
-  } else {
-    console.error(`[auth] ${context} failed:`, error)
-  }
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002"
+  )
 }
 
-// How long the unverified sign-up session stays available for resending the
-// verification email before the pending cookie expires.
-const PENDING_TTL_MS = 60 * 60 * 1000 // 1 hour
-
-async function setPendingVerificationCookie(secret: string): Promise<void> {
-  const cookieStore = await cookies()
-  cookieStore.set(PENDING_COOKIE, secret, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: "lax",
-    path: "/",
-    expires: new Date(Date.now() + PENDING_TTL_MS),
-  })
+function verificationUrl(token: string): string {
+  return `${env.siteUrl}/api/auth/verify?token=${encodeURIComponent(token)}`
 }
 
-export async function signInAction(input: {
+function passwordResetUrl(token: string): string {
+  return `${env.siteUrl}/reset-password?token=${encodeURIComponent(token)}`
+}
+
+async function issueToken(
+  userId: string,
+  type: "EMAIL_VERIFICATION" | "PASSWORD_RESET",
+  ttlSeconds: number,
+): Promise<string> {
+  const token = generateToken()
+  await prisma.$transaction([
+    prisma.verificationToken.deleteMany({ where: { userId, type } }),
+    prisma.verificationToken.create({
+      data: {
+        userId,
+        type,
+        tokenHash: hashToken(token),
+        expiresAt: new Date(Date.now() + ttlSeconds * 1000),
+      },
+    }),
+  ])
+  return token
+}
+
+async function sendVerificationSafely(input: {
+  userId: string
   email: string
-  password: string
-}): Promise<SignInResult> {
-  const parsed = signInSchema.safeParse(input)
-  if (!parsed.success) {
-    return { ok: false, reason: "invalid", fieldErrors: fieldErrorsOf(parsed.error) }
-  }
-  const { email, password } = parsed.data
-
-  const { account } = createAdminClient()
-
-  let session
-  try {
-    session = await account.createEmailPasswordSession({ email, password })
-  } catch (error) {
-    if (error instanceof AppwriteException && error.code === 401) {
-      return { ok: false, reason: "invalid" }
-    }
-    logAuthError("signInAction:createSession", error)
-    return { ok: false, reason: "error" }
-  }
-
-  // Enforce verified email before granting a session cookie.
-  try {
-    const sessionClient = await createSessionClient(session.secret)
-    const user = await sessionClient.account.get()
-    if (!user.emailVerification) {
-      try {
-        await sessionClient.account.deleteSession({ sessionId: "current" })
-      } catch {
-        // best effort — the unverified session will expire on its own
-      }
-      return { ok: false, reason: "unverified" }
-    }
-  } catch (error) {
-    logAuthError("signInAction:verifyCheck", error)
-    return { ok: false, reason: "error" }
-  }
-
-  await setSessionCookie(session.secret, session.expire)
-  const cookieStore = await cookies()
-  cookieStore.delete(PENDING_COOKIE)
-  return { ok: true }
-}
-
-export async function signUpAction(input: {
   name: string
-  email: string
-  password: string
-  confirmPassword: string
-}): Promise<SignUpResult> {
+}): Promise<void> {
+  if (!env.siteUrl) {
+    logAuthError("verification email", new Error("Site URL is not configured"))
+    return
+  }
+
+  const token = await issueToken(
+    input.userId,
+    "EMAIL_VERIFICATION",
+    VERIFICATION_TTL_SECONDS,
+  )
+  await setPendingVerificationCookie(token)
+
+  try {
+    await sendVerificationEmail({
+      to: input.email,
+      name: input.name,
+      url: verificationUrl(token),
+    })
+  } catch (error) {
+    // The account still exists and the pending cookie lets the user resend.
+    logAuthError("verification email", error)
+  }
+}
+
+export async function signUpAction(input: SignUpInput): Promise<SignUpResult> {
   const parsed = signUpSchema.safeParse(input)
   if (!parsed.success) {
-    return { ok: false, reason: "invalid", fieldErrors: fieldErrorsOf(parsed.error) }
-  }
-  const { name, email, password } = parsed.data
-
-  const { account } = createAdminClient()
-
-  try {
-    await account.create({ userId: ID.unique(), email, password, name })
-  } catch (error) {
-    if (error instanceof AppwriteException && error.code === 409) {
-      return { ok: false, reason: "exists" }
+    return {
+      ok: false,
+      reason: "invalid",
+      fieldErrors: fieldErrorsOf(parsed.error),
     }
-    logAuthError("signUpAction:create", error)
+  }
+
+  if (process.env.NODE_ENV === "production" && !hasEmailConfig()) {
+    logAuthError("sign-up", new Error("Email delivery is not configured"))
     return { ok: false, reason: "error" }
   }
 
-  // Send the verification email from the new session. We do NOT log the user in
-  // (no SESSION_COOKIE), but we keep the session secret in the short-lived
-  // pending cookie so the check-email page can resend without the password.
+  const email = normalizeEmail(parsed.data.email)
+  const meta = await currentRequestMeta()
+
+  const ipLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.signUpIp,
+    key: meta.ipAddress,
+    policy: AUTH_RATE_LIMITS.signUpIp,
+  })
+  if (!ipLimit.allowed) return { ok: false, reason: "rate_limit" }
+
+  const emailLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.signUpEmail,
+    key: email,
+    policy: AUTH_RATE_LIMITS.signUpEmail,
+  })
+  if (!emailLimit.allowed) return { ok: false, reason: "rate_limit" }
+
   try {
-    const session = await account.createEmailPasswordSession({ email, password })
-    const sessionClient = await createSessionClient(session.secret)
-    await sessionClient.account.createVerification({
-      url: env.appwrite.verifyRedirectUrl,
+    // Hash before the existence check so an existing account does not finish
+    // noticeably faster than a new one. The response is also generic for both
+    // cases, so sign-up cannot be used to discover registered addresses.
+    const passwordHash = await hashPassword(parsed.data.password)
+    const existing = await prisma.user.findUnique({ where: { email } })
+
+    if (existing) {
+      if (!existing.emailVerified) {
+        await sendVerificationSafely({
+          userId: existing.id,
+          email: existing.email,
+          name: existing.name,
+        })
+      }
+      return { ok: true, verificationSent: true }
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        name: parsed.data.name.trim(),
+        email,
+        passwordHash,
+      },
     })
-    await setPendingVerificationCookie(session.secret)
+
+    await sendVerificationSafely({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+    })
+
+    return { ok: true, verificationSent: true }
   } catch (error) {
-    // Account was created; surface a generic error so the user can retry sign-in
-    // (which will re-send verification via the resend flow later).
-    logAuthError("signUpAction:verify", error)
+    if (isUniqueConstraintError(error)) {
+      // A concurrent request created the address after our lookup. Do not turn
+      // that race into an account-existence oracle.
+      return { ok: true, verificationSent: true }
+    }
+    logAuthError("sign-up", error)
     return { ok: false, reason: "error" }
   }
-
-  return { ok: true, verificationSent: true }
 }
 
-/**
- * Resends the verification email using the unverified session stashed in the
- * pending cookie at sign-up. Returns `expired` when that cookie is gone (window
- * lapsed or the user never signed up in this browser).
- */
-export async function resendVerificationAction(): Promise<ResendResult> {
-  const cookieStore = await cookies()
-  const pendingSecret = cookieStore.get(PENDING_COOKIE)?.value
-  if (!pendingSecret) {
-    return { ok: false, reason: "expired" }
+export async function signInAction(input: SignInInput): Promise<SignInResult> {
+  const parsed = signInSchema.safeParse(input)
+  if (!parsed.success) {
+    return {
+      ok: false,
+      reason: "invalid",
+      fieldErrors: fieldErrorsOf(parsed.error),
+    }
   }
 
+  const email = normalizeEmail(parsed.data.email)
+  const meta = await currentRequestMeta()
+
+  const ipLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.signInIp,
+    key: meta.ipAddress,
+    policy: AUTH_RATE_LIMITS.signInIp,
+  })
+  if (!ipLimit.allowed) return { ok: false, reason: "rate_limit" }
+
+  const emailLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.signInEmail,
+    key: email,
+    policy: AUTH_RATE_LIMITS.signInEmail,
+  })
+  if (!emailLimit.allowed) return { ok: false, reason: "rate_limit" }
+
   try {
-    const sessionClient = await createSessionClient(pendingSecret)
-    await sessionClient.account.createVerification({
-      url: env.appwrite.verifyRedirectUrl,
+    const user = await prisma.user.findUnique({ where: { email } })
+
+    if (user?.lockedUntil && user.lockedUntil > new Date()) {
+      return { ok: false, reason: "invalid" }
+    }
+
+    const passwordMatches = await verifyPassword(
+      parsed.data.password,
+      user?.passwordHash ?? DUMMY_PASSWORD_HASH,
+    )
+
+    if (!user || !user.passwordHash || !passwordMatches) {
+      if (user) {
+        const attempts = user.failedLoginAttempts + 1
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            failedLoginAttempts: attempts,
+            lockedUntil:
+              attempts >= MAX_LOGIN_ATTEMPTS
+                ? new Date(Date.now() + LOCKOUT_SECONDS * 1000)
+                : null,
+          },
+        })
+      }
+      return { ok: false, reason: "invalid" }
+    }
+
+    if (!user.emailVerified) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: 0, lockedUntil: null },
+      })
+      await sendVerificationSafely({
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+      })
+      return { ok: false, reason: "unverified" }
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { failedLoginAttempts: 0, lockedUntil: null },
     })
+    await prisma.verificationToken.deleteMany({
+      where: { userId: user.id, type: "EMAIL_VERIFICATION" },
+    })
+    await clearAuthRateLimit(AUTH_RATE_LIMIT_SCOPE.signInEmail, email)
+    await createSession(user.id, meta)
+    await clearPendingVerificationCookie()
     return { ok: true }
   } catch (error) {
-    if (error instanceof AppwriteException && error.code === 429) {
-      return { ok: false, reason: "rate_limit" }
-    }
-    logAuthError("resendVerificationAction", error)
+    logAuthError("sign-in", error)
     return { ok: false, reason: "error" }
   }
 }
 
 export async function signOutAction(): Promise<void> {
   try {
-    const { account } = await createSessionClient()
-    await account.deleteSession({ sessionId: "current" })
-  } catch {
-    // no active session / already signed out
+    await destroyCurrentSession()
+  } catch (error) {
+    logAuthError("sign-out", error)
   }
-  const cookieStore = await cookies()
-  cookieStore.delete(SESSION_COOKIE)
-  cookieStore.delete(PENDING_COOKIE)
 }
 
-/**
- * Starts the Google OAuth2 flow. Appwrite redirects the user to Google's
- * consent screen; on success Google returns to Appwrite, which appends a
- * one-time `userId` + `secret` to our callback route where the session
- * cookie is created (`app/api/auth/oauth/route.ts`).
- *
- * The OAuth URL is built manually and the browser is redirected to it —
- * the admin SDK's `createOAuth2Token` cannot be used here because this
- * Appwrite server rejects OAuth token requests that carry an API key
- * (401 "Invalid redirect"). The endpoint must be hit as the end user.
- *
- * `redirectPath` is the post-login destination and is re-validated here —
- * only same-origin relative paths are forwarded to the callback.
- */
-export async function signInWithGoogleAction(redirectPath?: string): Promise<void> {
-  const safePath =
-    redirectPath && redirectPath.startsWith("/") && !redirectPath.startsWith("//")
-      ? redirectPath
-      : "/"
+export async function resendVerificationAction(): Promise<ResendResult> {
+  const pendingToken = await getPendingVerificationToken()
+  if (!pendingToken) return { ok: false, reason: "expired" }
 
-  let authUrl: string
+  const meta = await currentRequestMeta()
+  const ipLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.resendVerificationIp,
+    key: meta.ipAddress,
+    policy: AUTH_RATE_LIMITS.resendVerificationIp,
+  })
+  if (!ipLimit.allowed) return { ok: false, reason: "rate_limit" }
+
   try {
-    if (!env.siteUrl) {
-      throw new Error(
-        "NEXT_PUBLIC_SITE_URL is not set — add it to .env.local and restart the dev server",
-      )
-    }
-    const successUrl = new URL("/api/auth/oauth", env.siteUrl)
-    successUrl.searchParams.set("redirect", safePath)
-    const failureUrl = new URL("/sign-in?error=oauth", env.siteUrl)
+    const record = await prisma.verificationToken.findUnique({
+      where: { tokenHash: hashToken(pendingToken) },
+      include: { user: true },
+    })
 
-    const oauthUrl = new URL(
-      `${env.appwrite.endpoint}/account/tokens/oauth2/${OAuthProvider.Google}`,
-    )
-    oauthUrl.searchParams.set("project", env.appwrite.projectId)
-    oauthUrl.searchParams.set("success", successUrl.toString())
-    oauthUrl.searchParams.set("failure", failureUrl.toString())
-    authUrl = oauthUrl.toString()
+    if (
+      !record ||
+      record.type !== "EMAIL_VERIFICATION" ||
+      record.expiresAt <= new Date() ||
+      record.user.emailVerified
+    ) {
+      await clearPendingVerificationCookie()
+      return { ok: false, reason: "expired" }
+    }
+
+    const elapsedSeconds =
+      (Date.now() - record.createdAt.getTime()) / 1000
+    if (elapsedSeconds < RESEND_COOLDOWN_SECONDS) {
+      return { ok: false, reason: "rate_limit" }
+    }
+
+    await sendVerificationSafely({
+      userId: record.userId,
+      email: record.user.email,
+      name: record.user.name,
+    })
+    return { ok: true }
   } catch (error) {
-    logAuthError("signInWithGoogleAction:buildOAuthUrl", error)
-    redirect("/sign-in?error=oauth")
+    logAuthError("resend verification", error)
+    return { ok: false, reason: "error" }
+  }
+}
+
+export async function requestPasswordResetAction(
+  email: string,
+): Promise<RequestPasswordResetResult> {
+  const parsed = emailSchema.safeParse(email)
+  if (!parsed.success) return { ok: true }
+
+  const normalizedEmail = normalizeEmail(parsed.data)
+  const meta = await currentRequestMeta()
+
+  const ipLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.passwordResetIp,
+    key: meta.ipAddress,
+    policy: AUTH_RATE_LIMITS.passwordResetIp,
+  })
+  if (!ipLimit.allowed) return { ok: true }
+
+  const emailLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.passwordResetEmail,
+    key: normalizedEmail,
+    policy: AUTH_RATE_LIMITS.passwordResetEmail,
+  })
+  if (!emailLimit.allowed) return { ok: true }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    })
+    if (!user) return { ok: true }
+
+    if (!env.siteUrl) {
+      logAuthError("password reset request", new Error("Site URL is not configured"))
+      return { ok: true }
+    }
+
+    const latest = await prisma.verificationToken.findFirst({
+      where: { userId: user.id, type: "PASSWORD_RESET" },
+      orderBy: { createdAt: "desc" },
+    })
+    if (
+      latest &&
+      Date.now() - latest.createdAt.getTime() < RESEND_COOLDOWN_SECONDS * 1000
+    ) {
+      return { ok: true }
+    }
+
+    const token = await issueToken(
+      user.id,
+      "PASSWORD_RESET",
+      RESET_TTL_SECONDS,
+    )
+
+    try {
+      await sendPasswordResetEmail({
+        to: user.email,
+        name: user.name,
+        url: passwordResetUrl(token),
+      })
+    } catch (error) {
+      logAuthError("password reset email", error)
+    }
+  } catch (error) {
+    logAuthError("password reset request", error)
   }
 
-  redirect(authUrl)
+  return { ok: true }
+}
+
+export async function resetPasswordAction(
+  input: ResetPasswordInput,
+): Promise<ResetPasswordResult> {
+  const parsed = resetPasswordSchema.safeParse(input)
+  if (!parsed.success) {
+    return {
+      ok: false,
+      reason: "invalid",
+      fieldErrors: fieldErrorsOf(parsed.error),
+    }
+  }
+
+  const meta = await currentRequestMeta()
+  const ipLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.resetPasswordIp,
+    key: meta.ipAddress,
+    policy: AUTH_RATE_LIMITS.resetPasswordIp,
+  })
+  if (!ipLimit.allowed) return { ok: false, reason: "rate_limit" }
+
+  const tokenLimit = await consumeAuthRateLimit({
+    scope: AUTH_RATE_LIMIT_SCOPE.resetPasswordToken,
+    key: parsed.data.token,
+    policy: AUTH_RATE_LIMITS.resetPasswordToken,
+  })
+  if (!tokenLimit.allowed) return { ok: false, reason: "rate_limit" }
+
+  try {
+    const record = await prisma.verificationToken.findUnique({
+      where: { tokenHash: hashToken(parsed.data.token) },
+      include: { user: true },
+    })
+
+    if (
+      !record ||
+      record.type !== "PASSWORD_RESET" ||
+      record.expiresAt <= new Date()
+    ) {
+      if (record) {
+        await prisma.verificationToken
+          .delete({ where: { id: record.id } })
+          .catch(() => undefined)
+      }
+      return { ok: false, reason: "invalid" }
+    }
+
+    const passwordHash = await hashPassword(parsed.data.password)
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: record.userId },
+        data: {
+          passwordHash,
+          emailVerified: record.user.emailVerified ?? new Date(),
+          failedLoginAttempts: 0,
+          lockedUntil: null,
+        },
+      }),
+      prisma.verificationToken.deleteMany({
+        where: { userId: record.userId },
+      }),
+      prisma.session.deleteMany({ where: { userId: record.userId } }),
+    ])
+    await clearAuthRateLimit(
+      AUTH_RATE_LIMIT_SCOPE.resetPasswordToken,
+      parsed.data.token,
+    )
+    await clearSessionCookie()
+
+    return { ok: true }
+  } catch (error) {
+    logAuthError("password reset", error)
+    return { ok: false, reason: "error" }
+  }
 }

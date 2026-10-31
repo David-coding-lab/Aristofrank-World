@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BrandMark } from "@/components/features/layout/SiteHeader"
+import { BrandMark } from "@/components/features/layout/BrandMark"
 
 const QUICK_LINKS = [
   { label: "Home", href: "/" },
