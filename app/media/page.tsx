@@ -81,7 +81,6 @@ function Media() {
         <VideoContainer videos={videos} />
       </div>
 
-
       <SiteFooter />
       
     </div> 

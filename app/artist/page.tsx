@@ -1,6 +1,7 @@
 import {SiteHeader} from '@/components/features/layout/SiteHeader'
 import {SiteFooter} from '@/components/features/layout/SiteFooter'
 import LoadMoreArtists from '@/components/features/artist/LoadMoreArtists'
+import CTASection from '@/components/ui/CTASection'
 import NavLinks from '@/components/ui/NavLinks'
 
 function Artists() {
@@ -10,7 +11,7 @@ function Artists() {
     id: "1",
     artistName: "Ambers Marthy",
     artistSongStyle: "Gospel Musician",
-    profileLink: "https://imafes.com",
+    profileLink: "/artist/ambers",
     imageUrl:
       "https://images.unsplash.com/photo-1503853585905-d53f628e46ac?q=80&w=1886&auto=format&fit=crop",
   },
@@ -18,7 +19,7 @@ function Artists() {
     id: "2",
     artistName: "Sam Allin",
     artistSongStyle: "Hip hop Musician",
-    profileLink: "https://imafes.com",
+    profileLink: "/artist/sam",
     imageUrl:
       "https://images.unsplash.com/photo-1543379344-402b42ddbe8a?w=500&auto=format&fit=crop&q=60",
   },
@@ -26,7 +27,7 @@ function Artists() {
     id: "3",
     artistName: "Jax Ryder",
     artistSongStyle: "Abstract Visual Artist",
-    profileLink: "https://imafes.com",
+    profileLink: "/artist/jax",
     imageUrl:
       "https://images.unsplash.com/photo-1618673747378-7e0d3561371a?q=80&w=627&auto=format&fit=crop",
   },
@@ -34,7 +35,7 @@ function Artists() {
     id: "4",
     artistName: "Max Tailor",
     artistSongStyle: "Abstract Visual Artist",
-    profileLink: "https://imafes.com",
+    profileLink: "/artist/max",
     imageUrl:
       "https://images.unsplash.com/photo-1595971294624-80bcf0d7eb24?q=80&w=1169&auto=format&fit=crop",
   },
@@ -58,7 +59,7 @@ function Artists() {
     id: "6",
     artistName: "Mazy Rumbers",
     artistSongStyle: "Pop Artist",
-    profileLink: "https://imafes.com",
+    profileLink: "/artist/mazy",
     imageUrl:
       "https://images.unsplash.com/photo-1545224144-b38cd309ef69?q=80&w=687&auto=format&fit=crop",
   },
@@ -106,6 +107,10 @@ return (
         </section>
         <div className='mb-20'>        
             <LoadMoreArtists artists={artists}/>
+        </div>
+
+        <div>
+          {<CTASection />}
         </div>
 
         <SiteFooter />
