@@ -25,7 +25,6 @@ function VideoFrame({
         isActive ? "ring-2 ring-[#F5CF0F]" : ""
       } ${className}`}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <Image
         src={thumbnailUrl}
         width={20}

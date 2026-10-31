@@ -2,8 +2,7 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/features/layout/SiteHeader";
 import { SiteFooter } from "@/components/features/layout/SiteFooter";
 import Card from '@/components/features/video-production/Card'
-import VideoPlayer from '@/components/features/video-production/VideoPlayer'
-import VideoFrame from '@/components/features/video-production/VideoFrame.tsx'
+import VideoShowcase from '@/components/features/video-production/VideoShowcase'
 
 function VideoProduction() {
   const BASE = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample"
@@ -162,32 +161,7 @@ function VideoProduction() {
         See Our Work in Action
       </h1>
 
-        <VideoPlayer
-          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-          poster="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"
-        />
-
-        <div
-          className="
-            mt-10 flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto
-            px-4 pb-4
-            [-ms-overflow-style:none] [scrollbar-width:none]
-            [&::-webkit-scrollbar]:hidden
-            sm:gap-6 sm:px-8
-          "
-        >
-          {videos.map((video, index) => (
-            <div
-              key={`${video.videoUrl}-${index}`}
-              className="w-[80vw] max-w-[400px] shrink-0 snap-start sm:w-[400px]"
-            >
-              <VideoFrame
-                thumbnailUrl={video.thumbnailUrl}
-                videoUrl={video.videoUrl}
-              />
-            </div>
-          ))}
-        </div>
+        <VideoShowcase videos={videos} />
       </div>
       
 

@@ -119,18 +119,9 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
-          {avatarUser ? (
+          {avatarUser &&
             <AvatarMenu user={avatarUser} />
-          ) : (
-            <Link
-              href="/sign-in"
-              aria-label="Log in"
-              className="flex min-h-11 min-w-11 items-center justify-center text-white transition-colors hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <span className="material-symbols-outlined">person</span>
-            </Link>
-          )}
-
+          }
           <div ref={menuRef} className="relative">
             <button
               type="button"
