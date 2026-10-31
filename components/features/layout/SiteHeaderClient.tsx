@@ -122,7 +122,6 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
           {avatarUser &&
             <AvatarMenu user={avatarUser} />
           }
-
           <div ref={menuRef} className="relative">
             <button
               type="button"
