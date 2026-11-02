@@ -114,3 +114,60 @@ export async function sendPasswordResetEmail(input: {
     devUrl: input.url,
   })
 }
+
+export async function sendContactNotificationEmail(input: {
+  name: string
+  email: string
+  phone?: string
+  company?: string
+  service?: string
+  budget?: string
+  message: string
+  siteUrl: string
+}): Promise<void> {
+  await deliverEmail({
+    to: env.email.from,
+    subject: `New contact inquiry from ${input.name}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#181711">
+        <h1 style="font-size:24px;margin:0 0 16px">New Contact Inquiry</h1>
+        <table style="width:100%;border-collapse:collapse">
+          <tr><td style="padding:8px 0;font-weight:600">Name</td><td>${escapeHtml(input.name)}</td></tr>
+          <tr><td style="padding:8px 0;font-weight:600">Email</td><td>${escapeHtml(input.email)}</td></tr>
+          ${input.phone ? `<tr><td style="padding:8px 0;font-weight:600">Phone</td><td>${escapeHtml(input.phone)}</td></tr>` : ""}
+          ${input.company ? `<tr><td style="padding:8px 0;font-weight:600">Company</td><td>${escapeHtml(input.company)}</td></tr>` : ""}
+          ${input.service ? `<tr><td style="padding:8px 0;font-weight:600">Service</td><td>${escapeHtml(input.service)}</td></tr>` : ""}
+          ${input.budget ? `<tr><td style="padding:8px 0;font-weight:600">Budget</td><td>${escapeHtml(input.budget)}</td></tr>` : ""}
+        </table>
+        <p style="font-size:16px;line-height:1.6;margin:24px 0 0"><strong>Message:</strong></p>
+        <p style="font-size:16px;line-height:1.6;white-space:pre-wrap;margin:8px 0 0">${escapeHtml(input.message)}</p>
+        <p style="font-size:13px;line-height:1.6;color:#666161;margin:24px 0 0">Submitted via ${input.siteUrl}/contact-us</p>
+      </div>
+    `,
+    text: `New contact inquiry from ${input.name} (${input.email})\n\nMessage:\n${input.message}`,
+    devUrl: `${input.siteUrl}/contact-us`,
+  })
+}
+
+export async function sendContactAutoReplyEmail(input: {
+  name: string
+  email: string
+  siteUrl: string
+}): Promise<void> {
+  await deliverEmail({
+    to: input.email,
+    subject: "We received your message — Aristofrank World",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#181711">
+        <h1 style="font-size:24px;margin:0 0 16px">Thanks for reaching out, ${escapeHtml(input.name)}</h1>
+        <p style="font-size:16px;line-height:1.6;margin:0 0 24px">We&apos;ve received your inquiry and will get back to you within one business day.</p>
+        <p style="margin:0 0 24px">
+          <a href="${input.siteUrl}" style="display:inline-block;background:#181711;color:#fff;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:600">Back to Aristofrank World</a>
+        </p>
+        <p style="font-size:13px;line-height:1.6;color:#666161;margin:0">If you didn&apos;t submit this form, you can safely ignore this email.</p>
+      </div>
+    `,
+    text: `Thanks for reaching out, ${input.name}. We&apos;ll get back to you within one business day.`,
+    devUrl: input.siteUrl,
+  })
+}

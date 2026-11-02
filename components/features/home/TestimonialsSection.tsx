@@ -1,11 +1,18 @@
 import Link from "next/link"
+import type { TestimonialSummary } from "@/lib/content/types"
 import { TestimonialsCarousel } from "./TestimonialsCarousel"
+
+interface TestimonialsSectionProps {
+  testimonials: TestimonialSummary[]
+}
 
 /**
  * "Voices Of Our Partners" — social proof in dark charcoal panels, closed by
  * the final "Forge Your Legacy" conversion CTA.
  */
-export function TestimonialsSection() {
+export function TestimonialsSection({
+  testimonials,
+}: TestimonialsSectionProps) {
   return (
     <section className="py-16 sm:py-24 lg:py-28">
       <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -17,7 +24,7 @@ export function TestimonialsSection() {
           into legends.
         </p>
 
-        <TestimonialsCarousel />
+        <TestimonialsCarousel testimonials={testimonials} />
 
         <div className="mt-12 flex justify-center">
           <Link

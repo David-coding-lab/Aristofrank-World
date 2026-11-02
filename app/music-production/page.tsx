@@ -4,31 +4,41 @@ import MusicBanner from '@/components/features/music-production/MusicBanner'
 import RecentProjects from "@/components/features/music-production/RecentProjects";
 import Link from 'next/link'
 import ArtistsCard from '@/components/features/music-production/ArtistsCard'
+import { getTracks } from "@/lib/content/tracks"
+import { pageMetadata } from "@/lib/seo"
 
-function MusicProduction() {
-    const artists = [
-        {
-            id: 1,
-            name: "Luna",
-            roles: "Songwriter, Acoustic Singer, Gospel Singer",
-            image: "https://images.unsplash.com/photo-1765506255227-2feaa9bd58ec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/luna",
-        },
-        {
-            id: 2,
-            name: "David Okoro",
-            roles: "Producer, Mixing Engineer",
-            image: "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/david-okoro",
-        },
-        {
-            id: 3,
-            name: "Amara",
-            roles: "Vocalist, Songwriter",
-            image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/amara",
-        },
-    ];
+export const metadata = pageMetadata({
+  title: "Music Production",
+  description: "Custom music production, composition, recording, mixing, and sonic branding.",
+  path: "/music-production",
+})
+
+async function MusicProduction() {
+  const tracks = await getTracks(4)
+
+  const artists = [
+    {
+      id: 1,
+      name: "Luna",
+      roles: "Songwriter, Acoustic Singer, Gospel Singer",
+      image: "https://images.unsplash.com/photo-1765506255227-2feaa9bd58ec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+      link: "/artist/luna",
+    },
+    {
+      id: 2,
+      name: "David Okoro",
+      roles: "Producer, Mixing Engineer",
+      image: "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+      link: "/artist/david-okoro",
+    },
+    {
+      id: 3,
+      name: "Amara",
+      roles: "Vocalist, Songwriter",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+      link: "/artist/amara",
+    },
+  ];
 
   return (
     <div className="w-full h-fit bg-primary">
@@ -85,7 +95,7 @@ function MusicProduction() {
             </h3>        
         </div>
 
-        <RecentProjects />
+        <RecentProjects tracks={tracks} />
         <SiteFooter />
     </div>
   )

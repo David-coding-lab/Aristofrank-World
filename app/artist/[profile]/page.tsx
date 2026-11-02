@@ -1,104 +1,111 @@
-import { SiteHeader } from "@/components/features/layout/SiteHeader";
-import { SiteFooter } from "@/components/features/layout/SiteFooter";
-import ProfileBanner from '@/app/artist/[profile]/components/ProfileBanner'
-import RecentProjects from "@/components/features/music-production/RecentProjects";
-import ArtistsCard from '@/components/features/music-production/ArtistsCard'
-import CTASection from '@/components/ui/CTASection'
-import Link from 'next/link'
+import type { Metadata } from "next"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { SiteHeader } from "@/components/features/layout/SiteHeader"
+import { SiteFooter } from "@/components/features/layout/SiteFooter"
+import ProfileBanner from "@/app/artist/[profile]/components/ProfileBanner"
+import RecentProjects from "@/components/features/music-production/RecentProjects"
+import ArtistsCard from "@/components/features/music-production/ArtistsCard"
+import CTASection from "@/components/ui/CTASection"
+import { ArtistBreadcrumbs } from "@/components/features/artist/ArtistBreadcrumbs"
+import { ArtistJsonLd } from "@/components/features/artist/ArtistJsonLd"
+import { getArtistBySlug, getRelatedArtists } from "@/lib/content/artists"
+import { getArtistTracks } from "@/lib/content/tracks"
+import { pageMetadata, truncateDescription } from "@/lib/seo"
 
-function ProfilePage() {
-    const artists = [
-        {
-            id: 1,
-            name: "Luna",
-            roles: "Songwriter, Acoustic Singer, Gospel Singer",
-            image: "https://images.unsplash.com/photo-1765506255227-2feaa9bd58ec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/luna",
-        },
-        {
-            id: 2,
-            name: "David Okoro",
-            roles: "Producer, Mixing Engineer",
-            image: "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/david-okoro",
-        },
-        {
-            id: 3,
-            name: "Amara",
-            roles: "Vocalist, Songwriter",
-            image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-            link: "/artist/amara",
-        },
-    ];
+interface ArtistProfilePageProps {
+  params: Promise<{ profile: string }>
+}
+
+export async function generateMetadata({
+  params,
+}: ArtistProfilePageProps): Promise<Metadata> {
+  const { profile } = await params
+  const artist = await getArtistBySlug(profile)
+
+  if (!artist) {
+    return {
+      title: "Artist not found",
+      robots: { index: false, follow: false },
+    }
+  }
+
+  return pageMetadata({
+    title: artist.name,
+    description: truncateDescription(artist.bio),
+    path: `/artist/${artist.slug}`,
+    imageUrl: artist.imageUrl,
+    imageAlt: `${artist.name} — ${artist.roles}`,
+  })
+}
+
+export default async function ArtistProfilePage({
+  params,
+}: ArtistProfilePageProps) {
+  const { profile } = await params
+  const artist = await getArtistBySlug(profile)
+
+  if (!artist) notFound()
+
+  const [tracks, relatedArtists] = await Promise.all([
+    getArtistTracks(artist.id),
+    getRelatedArtists(artist.id),
+  ])
+
   return (
     <div className="w-full h-fit bg-primary">
-        <SiteHeader />
+      <SiteHeader />
 
-        <main className="mx-auto max-w-6xl p-6">
-            <ProfileBanner
-                artistName="Lucy ambers"
-                artistDescription="Franklin George is a gospel artist whose music celebrates faith, hope, and the joy of worship. With a heartfelt approach to his craft, he shares messages of encouragement, drawing on the love and grace at the heart of the gospel. His music invites listeners to reflect, find strength in their faith, and connect with God through song."
-                artistPlayLink="/productions/midnight-drive"
-                artistImage="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
-                artistSongStyle="Pop musician"
-            />
-        </main>
+      <main className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
+        <ArtistBreadcrumbs
+          artistName={artist.name}
+          artistSlug={artist.slug}
+        />
+        <ProfileBanner
+          artistName={artist.name}
+          artistDescription={artist.bio}
+          artistImage={artist.imageUrl}
+          artistSongStyle={artist.roles}
+        />
+      </main>
 
+      <div className="mx-auto mt-20 flex max-w-6xl items-center justify-between px-4 py-10 sm:px-6">
+        <h2 className="font-['Open_Sans',sans-serif] text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-2xl">
+          Songs
+        </h2>
+      </div>
 
+      <RecentProjects tracks={tracks} />
 
-        <div className="mx-auto mt-20 max-w-6xl py-10 flex justify-between items-center">
-        
-            <h3
-                className="font-['Open_Sans',sans-serif] text-2xl
-                font-bold leading-tight text-white
-                sm:text-3xl lg:text-2xl"
-            >
-                Songs
-            </h3>        
-        </div>
+      <div className="mx-auto mt-20 flex max-w-6xl items-center justify-between px-4 py-6 sm:px-6">
+        <h2 className="font-['Open_Sans',sans-serif] text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-2xl">
+          More Artists
+        </h2>
 
-        <RecentProjects />
+        <Link href="/artist" className="text-accent">
+          See More
+        </Link>
+      </div>
 
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 pb-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
+        {relatedArtists.map((related) => (
+          <ArtistsCard
+            key={related.id}
+            artistName={related.name}
+            artistRoles={related.roles}
+            artistImage={related.imageUrl}
+            artistLink={
+              related.externalUrl ?? `/artist/${related.slug}`
+            }
+          />
+        ))}
+      </div>
 
-        <div className="mx-auto mt-20 max-w-6xl py-6 flex justify-between items-center">
-            <h3
-                className="font-['Open_Sans',sans-serif] text-2xl
-                font-bold leading-tight text-white
-                sm:text-3xl lg:text-2xl"
-            >
-                More Artists
-            </h3>        
+      <div>{<CTASection />}</div>
 
+      <SiteFooter />
 
-            <Link href='/artist'>
-                <p className='text-accent'>
-                    See More
-                </p>
-            </Link>
-
-        </div>
-
-        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-3 pb-10">
-            {artists.map((artist) => (
-                <ArtistsCard
-                    key={artist.id}
-                    artistName={artist.name}
-                    artistRoles={artist.roles}
-                    artistImage={artist.image}
-                    artistLink={artist.link}
-                />
-            ))}
-        </div>
-
-        <div>
-            {<CTASection />}
-        </div>
-
-        
-
-        <SiteFooter />
+      <ArtistJsonLd artist={artist} />
     </div>
   )
 }
-
-export default ProfilePage
