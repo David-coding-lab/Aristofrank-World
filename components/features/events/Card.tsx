@@ -1,14 +1,15 @@
+"use client"
 
-"use client";
-
-import Image from "next/image";
+import Image from "next/image"
+import Link from "next/link"
 
 interface EventCardProps {
-  eventImage: string;
-  eventDescription: string;
-  eventDate: string;
-  eventTitle: string;
-  eventLocation: string;
+  eventImage: string
+  eventDescription: string
+  eventDate: string
+  eventTitle: string
+  eventLocation: string
+  ticketUrl?: string
 }
 
 const Cards = ({
@@ -17,10 +18,10 @@ const Cards = ({
   eventDate,
   eventTitle,
   eventLocation,
+  ticketUrl,
 }: EventCardProps) => {
   return (
     <div className="flex h-full w-full flex-col overflow-hidden rounded-t-xl bg-[#211F10]">
-      {/* Event image and dark overlay */}
       <div className="relative h-[190px] w-full">
         <Image
           src={eventImage}
@@ -33,9 +34,8 @@ const Cards = ({
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      {/* Event details */}
       <div className="flex flex-col px-5 pb-4 pt-5 text-start">
-        <p className="font-['Open_Sans',sans-serif] text-sm fontu-bold text-accent">
+        <p className="font-['Open_Sans',sans-serif] text-sm font-bold text-accent">
           {eventDate}
         </p>
 
@@ -47,7 +47,6 @@ const Cards = ({
           {eventDescription}
         </p>
 
-        {/* Location */}
         <div className="mt-7 flex items-center gap-1 font-['Open_Sans',sans-serif] text-sm text-[#74726D]">
           <span
             className="material-symbols-outlined text-[18px]"
@@ -55,20 +54,30 @@ const Cards = ({
           >
             location_on
           </span>
-
           <span>{eventLocation}</span>
         </div>
 
-        {/* Ticket button */}
-        <button
-          type="button"
-          className="mt-4 w-full cursor-pointer rounded-lg bg-accent px-4 py-3.5 font-['Open_Sans',sans-serif] text-sm font-semibold text-primary transition-opacity hover:opacity-85"
-        >
-          Buy Ticket
-        </button>
+        {ticketUrl ? (
+          <Link
+            href={ticketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 w-full inline-flex min-h-[44px] items-center justify-center rounded-lg bg-accent px-4 py-3.5 font-['Open_Sans',sans-serif] text-sm font-semibold text-primary transition-opacity hover:opacity-85"
+          >
+            Buy Ticket
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="mt-4 w-full cursor-not-allowed rounded-lg bg-white/10 px-4 py-3.5 font-['Open_Sans',sans-serif] text-sm font-semibold text-white/40"
+          >
+            Tickets Soon
+          </button>
+        )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Cards;
+export default Cards

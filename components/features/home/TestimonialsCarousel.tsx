@@ -1,43 +1,29 @@
 "use client"
 
 import { useRef } from "react"
+import type { TestimonialSummary } from "@/lib/content/types"
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "Aristofrank World didn't just rebrand us — they gave our story a heartbeat. Our audience finally sees us the way we always saw ourselves.",
-    name: "Tunde Adebayo",
-    role: "Founder, Adebayo Group",
-  },
-  {
-    quote:
-      "Working with their team felt like joining a movement. We went from a local name to a nationally recognized label in under a year.",
-    name: "Ngozi Eze",
-    role: "CEO, Nova Records",
-  },
-  {
-    quote:
-      "They treated our campaign like a film production. The attention to craft is on another level entirely.",
-    name: "Kofi Mensah",
-    role: "Creative Director, Kobe & Co",
-  },
-  {
-    quote:
-      "From our visual identity to our stage presence, everything is now unmistakably ours. Legends, indeed.",
-    name: "Amara Osei",
-    role: "Recording Artist",
-  },
-]
+interface TestimonialsCarouselProps {
+  testimonials: TestimonialSummary[]
+}
 
 function Star() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="#F2CC0D" aria-hidden="true">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="#F2CC0D"
+      aria-hidden="true"
+    >
       <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
     </svg>
   )
 }
 
-export function TestimonialsCarousel() {
+export function TestimonialsCarousel({
+  testimonials,
+}: TestimonialsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null)
 
   function scrollByCards(direction: 1 | -1) {
@@ -48,24 +34,26 @@ export function TestimonialsCarousel() {
     track.scrollBy({ left: direction * step, behavior: "smooth" })
   }
 
+  if (testimonials.length === 0) return null
+
   return (
     <div className="mt-12">
       <div
         ref={trackRef}
         className="flex snap-x snap-mandatory gap-6 overflow-x-auto scrollbar-hide pb-2"
       >
-        {TESTIMONIALS.map((testimonial) => (
+        {testimonials.map((testimonial) => (
           <figure
-            key={testimonial.name}
+            key={testimonial.id}
             data-card
             className="w-[85%] shrink-0 snap-start rounded-2xl bg-panel p-6 sm:w-[420px] sm:p-8"
           >
             <div
               className="flex gap-1"
               role="img"
-              aria-label="Rated 5 out of 5 stars"
+              aria-label={`Rated ${testimonial.rating} out of 5 stars`}
             >
-              {Array.from({ length: 5 }, (_, i) => (
+              {Array.from({ length: testimonial.rating }, (_, i) => (
                 <Star key={i} />
               ))}
             </div>
