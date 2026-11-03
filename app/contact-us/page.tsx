@@ -1,3 +1,4 @@
+"use-client"
 import { useState } from "react"
 import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel"
 import { submitContactAction } from "@/lib/actions/contact"
