@@ -35,7 +35,7 @@ const Cards = ({
       </div>
 
       <div className="flex flex-col px-5 pb-4 pt-5 text-start">
-        <p className="font-['Open_Sans',sans-serif] text-sm font-bold text-accent">
+        <p className="font-['Open_Sans',sans-serif] text-sm font-bold text-accent" suppressHydrationWarning>
           {eventDate}
         </p>
 

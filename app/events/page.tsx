@@ -15,6 +15,16 @@ export const metadata = pageMetadata({
 export default async function EventsPage() {
   const events = await getUpcomingEvents()
 
+  // Pre-format dates on the server so client hydration matches exactly.
+  const eventsWithDates = events.map((event) => ({
+    ...event,
+    formattedDate: new Date(event.startsAt).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+  }))
+
   return (
     <div className="w-full h-fit bg-primary">
       <SiteHeader />
@@ -36,7 +46,7 @@ export default async function EventsPage() {
         </h2>
 
         <div className="mt-5 mb-10">
-          <EventCard events={events} />
+          <EventCard events={eventsWithDates} />
         </div>
       </section>
       <SiteFooter />

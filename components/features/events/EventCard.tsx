@@ -49,11 +49,7 @@ function EventCard({ events }: EventCardProps) {
           <Cards
             key={event.id}
             eventImage={event.imageUrl}
-            eventDate={new Date(event.startsAt).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
+            eventDate={event.formattedDate ?? new Date(event.startsAt).toDateString()}
             eventTitle={event.title}
             eventDescription={event.description}
             eventLocation={`${event.venue}, ${event.city}`}

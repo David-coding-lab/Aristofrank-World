@@ -34,6 +34,7 @@ export interface EventSummary {
   venue: string
   city: string
   ticketUrl: string | null
+  formattedDate?: string
 }
 
 export interface MediaSummary {

@@ -131,7 +131,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/5 py-6 text-center text-xs text-white/40">
-        © {new Date().getFullYear()} Aristofrank World. All rights reserved.
+        © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Aristofrank World. All rights reserved.
       </div>
     </footer>
   )

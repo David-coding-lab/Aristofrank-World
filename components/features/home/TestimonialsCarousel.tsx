@@ -22,7 +22,7 @@ function Star() {
 }
 
 export function TestimonialsCarousel({
-  testimonials,
+  testimonials = [],
 }: TestimonialsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null)
 
