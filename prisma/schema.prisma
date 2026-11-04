@@ -229,27 +229,6 @@ model AuthThrottle {
   @@index([lockedUntil])
 }
 
-model Artist {
-  id        String   @id @default(cuid())
-  name      String
-  role      String
-  imageUrl  String?
-  bio       String?
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Testimonial {
-  id        String   @id @default(cuid())
-  quote     String
-  name      String
-  role      String
-  rating    Int      @default(5)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Service {
   id          String   @id @default(cuid())
   name        String
