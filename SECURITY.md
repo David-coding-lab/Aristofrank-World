@@ -39,7 +39,10 @@ make sure one compromised layer does not hand over the whole account.
 - Every response gets a Content-Security-Policy that blocks plugins, framing, base-tag
   hijacking, and cross-origin form posts, plus HSTS in production, `X-Frame-Options:
   DENY`, a restrictive referrer policy, MIME sniffing protection, a limited permissions
-  policy, and cross-origin isolation headers.
+  policy, and cross-origin isolation headers. On Vercel builds the policy additionally
+  allows `https://vercel.live`, its Pusher websocket, and the deployment's own
+  `*.vercel.app` origins for the injected Live feedback toolbar; the allowance is
+  gated on `VERCEL` so self-hosted and local builds stay strict.
 - The full dependency audit (including dev dependencies) was clean after upgrading
   Next.js to 16.4.3 and overriding a vulnerable transitive `deepmerge-ts` dependency.
 - No Appwrite runtime code or credentials remain in the authentication path.
