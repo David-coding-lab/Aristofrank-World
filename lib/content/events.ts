@@ -1,9 +1,11 @@
 import "server-only"
 
-import { prisma } from "@/lib/prisma"
+import { isDatabaseConfigured, prisma } from "@/lib/prisma"
 import type { EventSummary } from "./types"
 
 export async function getUpcomingEvents(): Promise<EventSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   const events = await prisma.event.findMany({
     where: { status: "PUBLISHED" },
     orderBy: { startsAt: "asc" },

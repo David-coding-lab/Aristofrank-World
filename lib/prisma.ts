@@ -8,6 +8,13 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 /**
+ * Whether a database connection has been configured. Builds run without a
+ * database (local `pnpm build`, CI without secrets); content readers use this
+ * to return empty results instead of attempting a doomed connection.
+ */
+export const isDatabaseConfigured = Boolean(process.env.DATABASE_URL?.trim())
+
+/**
  * One Prisma client per server process. Next.js reloads modules during
  * development, so the client is cached on `globalThis` outside production to
  * avoid exhausting the Postgres connection pool.

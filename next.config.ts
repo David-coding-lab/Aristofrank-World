@@ -50,6 +50,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // Low-resource hosts: a single static-generation worker keeps CPU use flat
+    // and avoids several processes competing for the same limited memory.
+    cpus: 1,
+  },
   images: {
     remotePatterns: [
       {

@@ -1,6 +1,6 @@
 import "server-only"
 
-import { prisma } from "@/lib/prisma"
+import { isDatabaseConfigured, prisma } from "@/lib/prisma"
 import type { TrackSummary } from "./types"
 
 const trackSelect = {
@@ -14,6 +14,8 @@ const trackSelect = {
 } as const
 
 export async function getTracks(limit?: number): Promise<TrackSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   return prisma.track.findMany({
     orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     ...(limit ? { take: limit } : {}),
@@ -22,6 +24,8 @@ export async function getTracks(limit?: number): Promise<TrackSummary[]> {
 }
 
 export async function getFeaturedTrack(): Promise<TrackSummary | null> {
+  if (!isDatabaseConfigured) return null
+
   return prisma.track.findFirst({
     where: { featured: true },
     orderBy: [{ order: "asc" }, { createdAt: "asc" }],
@@ -32,6 +36,8 @@ export async function getFeaturedTrack(): Promise<TrackSummary | null> {
 export async function getArtistTracks(
   artistId: string,
 ): Promise<TrackSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   return prisma.track.findMany({
     where: { artistId },
     orderBy: [{ order: "asc" }, { createdAt: "asc" }],

@@ -1,7 +1,7 @@
 import "server-only"
 
 import type { Prisma } from "@prisma/client"
-import { prisma } from "@/lib/prisma"
+import { isDatabaseConfigured, prisma } from "@/lib/prisma"
 import type { ArtistDetail, ArtistSummary } from "./types"
 
 const artistSummarySelect = {
@@ -22,6 +22,8 @@ function socialLinksOf(value: Prisma.JsonValue | null): string[] {
 }
 
 export async function getArtists(): Promise<ArtistSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   return prisma.artist.findMany({
     where: { status: "PUBLISHED" },
     orderBy: [{ order: "asc" }, { name: "asc" }],
@@ -32,6 +34,8 @@ export async function getArtists(): Promise<ArtistSummary[]> {
 export async function getFeaturedArtists(
   limit = 4,
 ): Promise<ArtistSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   return prisma.artist.findMany({
     where: { status: "PUBLISHED", featured: true },
     orderBy: [{ order: "asc" }, { name: "asc" }],
@@ -43,6 +47,8 @@ export async function getFeaturedArtists(
 export async function getArtistBySlug(
   slug: string,
 ): Promise<ArtistDetail | null> {
+  if (!isDatabaseConfigured) return null
+
   const artist = await prisma.artist.findUnique({
     where: { slug },
     select: {
@@ -71,6 +77,8 @@ export async function getRelatedArtists(
   excludeArtistId: string,
   limit = 3,
 ): Promise<ArtistSummary[]> {
+  if (!isDatabaseConfigured) return []
+
   return prisma.artist.findMany({
     where: { status: "PUBLISHED", id: { not: excludeArtistId } },
     orderBy: [{ order: "asc" }, { name: "asc" }],
