@@ -1,0 +1,28 @@
+{
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "app/contact-us/page.tsx": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "app/artist/[profile]/page.tsx": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "app/sitemap.ts": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "app/robots.ts": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  }
+}

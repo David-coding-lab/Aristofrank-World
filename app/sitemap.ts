@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { siteUrl } from "@/lib/env"
+import { isDatabaseConfigured } from "@/lib/prisma"
 import { getArtists } from "@/lib/content/artists"
 import { getUpcomingEvents } from "@/lib/content/events"
 import { getMediaPosts } from "@/lib/content/media"
@@ -59,11 +60,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  const [artists, events, mediaPosts] = await Promise.all([
-    getArtists(),
-    getUpcomingEvents(),
-    getMediaPosts(),
-  ])
+  let artists: Array<{ slug: string }> = []
+  let events: Array<{ startsAt: string | Date }> = []
+  let mediaPosts: Array<{ publishedAt: string | Date }> = []
+
+  if (isDatabaseConfigured) {
+    try {
+      const [a, e, m] = await Promise.all([
+        getArtists(),
+        getUpcomingEvents(),
+        getMediaPosts(),
+      ])
+      artists = a
+      events = e
+      mediaPosts = m
+    } catch {
+      // Database unavailable at build time — fall back to static routes only.
+    }
+  }
 
   const artistRoutes: MetadataRoute.Sitemap = artists.map((artist) => ({
     url: `${base}/artist/${artist.slug}`,
