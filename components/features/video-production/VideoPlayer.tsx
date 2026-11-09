@@ -1,34 +1,29 @@
-"use client"
+'use client';
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react';
 
 interface VideoPlayerProps {
-  src: string
-  poster?: string
-  autoPlay?: boolean
-  className?: string
+  src: string;
+  poster?: string;
+  autoPlay?: boolean;
+  className?: string;
 }
 
-function VideoPlayer({
-  src,
-  poster,
-  autoPlay = false,
-  className = "",
-}: VideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [started, setStarted] = useState(autoPlay)
+function VideoPlayer({ src, poster, autoPlay = false, className = '' }: VideoPlayerProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(autoPlay);
 
   // When mounted with autoPlay (e.g. after picking a video from the list), start right away
   useEffect(() => {
-    if (!autoPlay) return
-    videoRef.current?.play().catch(() => setStarted(false))
+    if (!autoPlay) return;
+    videoRef.current?.play().catch(() => setStarted(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const handlePlay = () => {
-    setStarted(true)
-    videoRef.current?.play()
-  }
+    setStarted(true);
+    videoRef.current?.play();
+  };
 
   return (
     <div
@@ -41,9 +36,7 @@ function VideoPlayer({
         preload="metadata"
         playsInline
         controls={started}
-        className={`absolute inset-0 h-full w-full ${
-          started ? "object-contain" : "object-cover"
-        }`}
+        className={`absolute inset-0 h-full w-full ${started ? 'object-contain' : 'object-cover'}`}
         onEnded={() => setStarted(false)}
       />
 
@@ -75,7 +68,7 @@ function VideoPlayer({
         </>
       )}
     </div>
-  )
+  );
 }
 
-export default VideoPlayer
+export default VideoPlayer;

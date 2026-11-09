@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import Image from "next/image"
+import Image from 'next/image';
 
 interface EventCardProps {
-  eventImage: string
-  eventDescription: string
-  eventDate: string
-  eventTitle: string
-  eventLocation: string
-  ticketPrice?: number
-  availableTickets?: number
+  eventImage: string;
+  eventDescription: string;
+  eventDate: string;
+  eventTitle: string;
+  eventLocation: string;
+  ticketPrice?: number;
+  availableTickets?: number;
 }
 
 const Cards = ({
@@ -21,7 +21,7 @@ const Cards = ({
   ticketPrice,
   availableTickets,
 }: EventCardProps) => {
-  const hasTickets = Boolean(ticketPrice && availableTickets && availableTickets > 0)
+  const hasTickets = Boolean(ticketPrice && availableTickets && availableTickets > 0);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden rounded-t-xl bg-[#211F10]">
@@ -38,7 +38,10 @@ const Cards = ({
       </div>
 
       <div className="flex flex-col px-5 pb-4 pt-5 text-start">
-        <p className="font-['Open_Sans',sans-serif] text-sm font-bold text-accent" suppressHydrationWarning>
+        <p
+          className="font-['Open_Sans',sans-serif] text-sm font-bold text-accent"
+          suppressHydrationWarning
+        >
           {eventDate}
         </p>
 
@@ -51,25 +54,17 @@ const Cards = ({
         </p>
 
         <div className="mt-7 flex items-center gap-1 font-['Open_Sans',sans-serif] text-sm text-[#74726D]">
-          <span
-            className="material-symbols-outlined text-[18px]"
-            aria-hidden="true"
-          >
+          <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
             location_on
           </span>
           <span>{eventLocation}</span>
         </div>
 
         <div className="mt-4 flex items-center gap-2 font-['Open_Sans',sans-serif] text-sm text-[#74726D]">
-          <span
-            className="material-symbols-outlined text-[18px]"
-            aria-hidden="true"
-          >
+          <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
             attach_money
           </span>
-          <span>
-            {hasTickets ? `NGN ${ticketPrice?.toLocaleString()}` : "Sold Out"}
-          </span>
+          <span>{hasTickets ? `NGN ${ticketPrice?.toLocaleString()}` : 'Sold Out'}</span>
         </div>
 
         {hasTickets ? (
@@ -90,7 +85,7 @@ const Cards = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Cards
+export default Cards;

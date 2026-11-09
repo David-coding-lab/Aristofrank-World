@@ -1,17 +1,17 @@
-import { SiteHeader } from "@/components/features/layout/SiteHeader"
-import { SiteFooter } from "@/components/features/layout/SiteFooter"
-import { HeroHeader } from "@/components/features/home/HeroHeader"
-import { ServicesSection } from "@/components/features/home/ServicesSection"
-import { FeaturedArtists } from "@/components/features/home/FeaturedArtists"
-import { TestimonialsSection } from "@/components/features/home/TestimonialsSection"
-import { getFeaturedArtists } from "@/lib/content/artists"
-import { getTestimonials } from "@/lib/content/testimonials"
+import { SiteHeader } from '@/components/features/layout/SiteHeader';
+import { SiteFooter } from '@/components/features/layout/SiteFooter';
+import { HeroHeader } from '@/components/features/home/HeroHeader';
+import { ServicesSection } from '@/components/features/home/ServicesSection';
+import { FeaturedArtists } from '@/components/features/home/FeaturedArtists';
+import { TestimonialsSection } from '@/components/features/home/TestimonialsSection';
+import { getFeaturedArtists } from '@/lib/content/artists';
+import { getTestimonials } from '@/lib/content/testimonials';
 
 export default async function Home() {
   const [featuredArtists, testimonials] = await Promise.all([
     getFeaturedArtists(),
     getTestimonials(),
-  ])
+  ]);
 
   return (
     <>
@@ -24,5 +24,5 @@ export default async function Home() {
       </main>
       <SiteFooter />
     </>
-  )
+  );
 }

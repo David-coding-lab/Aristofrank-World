@@ -1,12 +1,12 @@
-import Link from "next/link"
-import Image from "next/image"
+import Link from 'next/link';
+import Image from 'next/image';
 
 /** Brand panel for the sign-in / sign-up split screens. */
 export function AuthBrandPanel() {
   return (
     <div
       className="relative h-[38vh] sm:h-[42vh] lg:h-full lg:min-h-screen"
-      style={{ backgroundColor: "var(--color-primary)" }}
+      style={{ backgroundColor: 'var(--color-primary)' }}
     >
       {/* Logo */}
       <Link
@@ -14,9 +14,7 @@ export function AuthBrandPanel() {
         className="absolute left-4 top-4 z-10 flex items-center gap-2 sm:left-6 sm:top-6 lg:left-8 lg:top-8"
       >
         <Image src="/favicon.svg" alt="Aristofrank World logo" width={36} height={36} />
-        <span className="font-bold text-white text-lg tracking-tight">
-          Aristofrank World
-        </span>
+        <span className="font-bold text-white text-lg tracking-tight">Aristofrank World</span>
       </Link>
 
       {/* Brand message — centers on desktop, crops on mobile */}
@@ -31,5 +29,5 @@ export function AuthBrandPanel() {
         </div>
       </div>
     </div>
-  )
+  );
 }

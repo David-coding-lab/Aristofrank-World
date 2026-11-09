@@ -38,7 +38,7 @@ make sure one compromised layer does not hand over the whole account.
   overwriting them.
 - Every response gets a Content-Security-Policy that blocks plugins, framing, base-tag
   hijacking, and cross-origin form posts, plus HSTS in production, `X-Frame-Options:
-  DENY`, a restrictive referrer policy, MIME sniffing protection, a limited permissions
+DENY`, a restrictive referrer policy, MIME sniffing protection, a limited permissions
   policy, and cross-origin isolation headers. On Vercel builds the policy additionally
   allows `https://vercel.live`, its Pusher websocket, and the deployment's own
   `*.vercel.app` origins for the injected Live feedback toolbar; the allowance is

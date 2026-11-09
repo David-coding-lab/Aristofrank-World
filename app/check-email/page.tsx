@@ -1,14 +1,14 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { ResendVerification } from "./components/ResendVerification"
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ResendVerification } from './components/ResendVerification';
 
-const PRIMARY = "#181711"
+const PRIMARY = '#181711';
 
 export const metadata: Metadata = {
-  title: "Check your email",
-  description: "Verify your Aristofrank World account from the link we just emailed you.",
+  title: 'Check your email',
+  description: 'Verify your Aristofrank World account from the link we just emailed you.',
   robots: { index: false, follow: false },
-}
+};
 
 export default function CheckEmailPage() {
   return (
@@ -22,16 +22,13 @@ export default function CheckEmailPage() {
           mark_email_read
         </span>
 
-        <h1
-          className="text-xl font-semibold sm:text-2xl lg:text-3xl"
-          style={{ color: PRIMARY }}
-        >
+        <h1 className="text-xl font-semibold sm:text-2xl lg:text-3xl" style={{ color: PRIMARY }}>
           Check your email
         </h1>
 
         <p className="mt-3 text-sm text-[#555252] sm:text-base">
-          If you&apos;re creating a new account, check your inbox for a
-          verification link. If you already have an account, sign in instead.
+          If you&apos;re creating a new account, check your inbox for a verification link. If you
+          already have an account, sign in instead.
         </p>
 
         <p className="mt-2 text-xs text-[#888484] sm:text-sm">
@@ -49,5 +46,5 @@ export default function CheckEmailPage() {
         </Link>
       </div>
     </main>
-  )
+  );
 }

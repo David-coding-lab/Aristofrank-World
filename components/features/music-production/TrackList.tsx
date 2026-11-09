@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState } from 'react';
+import Image from 'next/image';
 
 export interface Track {
   id: string | number;
@@ -25,41 +25,32 @@ function TrackRow({ track, onSelect }: TrackRowProps) {
       className="group flex w-full items-center gap-3 rounded-xl text-left transition hover:bg-white/5"
     >
       {/* Cover art */}
-        <div className="relative flex h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-            <Image
-                src={track.cover}
-                alt={track.title}
-                fill
-                sizes="80px"
-                className="object-cover"
-            />
+      <div className="relative flex h-20 w-20 shrink-0 overflow-hidden rounded-xl">
+        <Image src={track.cover} alt={track.title} fill sizes="80px" className="object-cover" />
 
-            {/* Play overlay */}
-             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <span
-                    className="material-symbols-outlined !text-[40px] text-white"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                    play_arrow
-                </span>
-            </div>
+        {/* Play overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <span
+            className="material-symbols-outlined !text-[40px] text-white"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            play_arrow
+          </span>
         </div>
-        <div className="flex justify-between w-full">
-            <div className="flex-row fotn-bold text-lg">
+      </div>
+      <div className="flex justify-between w-full">
+        <div className="flex-row fotn-bold text-lg">
+          <p className="text-secondary">&ldquo;{track.title}&rdquo;</p>
 
-            <p className="text-secondary">&ldquo;{track.title}&rdquo;</p>
-
-            {/* Artist */}
-            <p className="flex-1 text-sm mt-2 font-bold text-[#A8A28A] transition group-hover:text-white">
-                {track.artist}
-            </p>
-            </div>
-
-            {/* Duration */}
-            <p className="pr-2 text-base font-bold text-[#A8A28A]">
-                {track.duration}
-            </p>
+          {/* Artist */}
+          <p className="flex-1 text-sm mt-2 font-bold text-[#A8A28A] transition group-hover:text-white">
+            {track.artist}
+          </p>
         </div>
+
+        {/* Duration */}
+        <p className="pr-2 text-base font-bold text-[#A8A28A]">{track.duration}</p>
+      </div>
     </button>
   );
 }
@@ -71,12 +62,7 @@ interface TrackListProps {
   onSelectTrack?: (track: Track) => void;
 }
 
-function TrackList({
-  tracks,
-  initialCount = 3,
-  step = 3,
-  onSelectTrack,
-}: TrackListProps) {
+function TrackList({ tracks, initialCount = 3, step = 3, onSelectTrack }: TrackListProps) {
   const [visibleCount, setVisibleCount] = useState(initialCount);
   const hasMore = visibleCount < tracks.length;
 

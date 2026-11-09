@@ -1,30 +1,28 @@
-"use client";
+'use client';
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel";
-import { EyeIcon } from "@/components/features/auth/EyeIcon";
-import { signInAction } from "@/lib/auth/actions";
-import { safeRedirectPath } from "@/lib/auth/redirects";
-import { signInSchema, fieldErrorsOf } from "@/lib/validations/auth";
-import type { FieldErrors } from "@/types";
+import { use, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { AuthBrandPanel } from '@/components/features/auth/AuthBrandPanel';
+import { EyeIcon } from '@/components/features/auth/EyeIcon';
+import { signInAction } from '@/lib/auth/actions';
+import { safeRedirectPath } from '@/lib/auth/redirects';
+import { signInSchema, fieldErrorsOf } from '@/lib/validations/auth';
+import type { FieldErrors } from '@/types';
 
-const PRIMARY = "#181711";
-const PRIMARY_FOCUS = "focus:ring-[#181711]";
+const PRIMARY = '#181711';
+const PRIMARY_FOCUS = 'focus:ring-[#181711]';
 
 /** Resolve the post-login destination from the `?redirect=` query param. */
 function safeRedirectTarget(): string {
-  if (typeof window === "undefined") return "/";
-  const raw = new URLSearchParams(window.location.search).get("redirect");
+  if (typeof window === 'undefined') return '/';
+  const raw = new URLSearchParams(window.location.search).get('redirect');
   return safeRedirectPath(raw);
 }
 
 const OAUTH_ERROR_MESSAGE = "Google sign-in didn't complete. Please try again.";
 
-function firstParam(
-  value: string | string[] | undefined,
-): string | undefined {
+function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
@@ -34,13 +32,11 @@ function firstParam(
  * The callback handles a cancelled consent screen silently. Any other failure
  * shows one friendly message and never the raw provider payload.
  */
-function oauthErrorMessage(
-  error: string | string[] | undefined,
-): string | null {
+function oauthErrorMessage(error: string | string[] | undefined): string | null {
   const value = firstParam(error);
   if (!value) return null;
-  return value === "rate_limit"
-    ? "Too many sign-in attempts. Please wait a few minutes and try again."
+  return value === 'rate_limit'
+    ? 'Too many sign-in attempts. Please wait a few minutes and try again.'
     : OAUTH_ERROR_MESSAGE;
 }
 
@@ -57,26 +53,24 @@ export default function SignInPage({
   const { error, verified, verify, reset, redirect } = use(searchParams);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState<string | null>(
-    oauthErrorMessage(error),
-  );
+  const [formError, setFormError] = useState<string | null>(oauthErrorMessage(error));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleRedirect = safeRedirectPath(firstParam(redirect));
 
   const successMessage =
-    firstParam(verified) === "1"
-      ? "Email verified. You can log in now."
-      : firstParam(reset) === "1"
-        ? "Password updated. Log in with your new password."
+    firstParam(verified) === '1'
+      ? 'Email verified. You can log in now.'
+      : firstParam(reset) === '1'
+        ? 'Password updated. Log in with your new password.'
         : null;
   const verificationError =
-    firstParam(verify) === "invalid"
-      ? "That verification link is invalid or has expired. Request a new one below."
-      : firstParam(verify) === "rate_limit"
-        ? "Too many verification attempts. Please wait a few minutes and try again."
+    firstParam(verify) === 'invalid'
+      ? 'That verification link is invalid or has expired. Request a new one below.'
+      : firstParam(verify) === 'rate_limit'
+        ? 'Too many verification attempts. Please wait a few minutes and try again.'
         : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,44 +94,39 @@ export default function SignInPage({
         return;
       }
 
-      if (result.reason === "unverified") {
-        router.push("/check-email");
+      if (result.reason === 'unverified') {
+        router.push('/check-email');
         return;
       }
 
-      if (result.reason === "invalid") {
+      if (result.reason === 'invalid') {
         if (result.fieldErrors) setErrors(result.fieldErrors);
-        setFormError("Incorrect email or password.");
-      } else if (result.reason === "rate_limit") {
-        setFormError(
-          "Too many attempts. Please wait a few minutes and try again.",
-        );
+        setFormError('Incorrect email or password.');
+      } else if (result.reason === 'rate_limit') {
+        setFormError('Too many attempts. Please wait a few minutes and try again.');
       } else {
-        setFormError("Something went wrong. Please try again.");
+        setFormError('Something went wrong. Please try again.');
       }
     } catch {
-      setFormError("Something went wrong. Please try again.");
+      setFormError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleForgotPassword = () => {
-    router.push("/forgot-password");
+    router.push('/forgot-password');
   };
 
   const inputClass = (hasError: boolean) =>
     [
-      "w-full h-[50px] rounded-[10px] bg-[#F3F3F3] px-4 text-[15px] text-[#666161]",
-      "outline-none transition-all duration-150 focus:ring-2",
-      hasError
-        ? "ring-2 ring-red-500 focus:ring-red-500"
-        : `ring-0 ${PRIMARY_FOCUS}`,
-    ].join(" ");
+      'w-full h-[50px] rounded-[10px] bg-[#F3F3F3] px-4 text-[15px] text-[#666161]',
+      'outline-none transition-all duration-150 focus:ring-2',
+      hasError ? 'ring-2 ring-red-500 focus:ring-red-500' : `ring-0 ${PRIMARY_FOCUS}`,
+    ].join(' ');
 
   return (
     <div className="min-h-screen bg-white lg:grid lg:min-h-screen lg:grid-cols-2">
-
       {/* ── Brand panel ── */}
       <AuthBrandPanel />
 
@@ -151,16 +140,9 @@ export default function SignInPage({
             Log In
           </h1>
 
-          <form
-            onSubmit={handleSubmit}
-            noValidate
-            className="flex flex-col gap-4 sm:gap-5"
-          >
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 sm:gap-5">
             {formError && (
-              <p
-                role="alert"
-                className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600"
-              >
+              <p role="alert" className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600">
                 {formError}
               </p>
             )}
@@ -204,7 +186,7 @@ export default function SignInPage({
                 className={`${inputClass(!!errors.password)} pr-10 relative flex items-center justify-between`}
               >
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -213,10 +195,7 @@ export default function SignInPage({
                   aria-label="Password"
                   className="w-full bg-transparent px-4 text-[15px] text-[#666161] outline-none"
                 />
-                <EyeIcon
-                  show={showPassword}
-                  onToggle={() => setShowPassword((p) => !p)}
-                />
+                <EyeIcon show={showPassword} onToggle={() => setShowPassword((p) => !p)} />
               </div>
               <FieldError message={errors.password} />
             </div>
@@ -240,7 +219,7 @@ export default function SignInPage({
               className="min-h-[48px] w-full rounded-xl font-medium text-white transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60 sm:min-h-[50px]"
               style={{ backgroundColor: PRIMARY }}
             >
-              {isSubmitting ? "Logging in…" : "Log In"}
+              {isSubmitting ? 'Logging in…' : 'Log In'}
             </button>
 
             {/* Divider */}
@@ -256,29 +235,37 @@ export default function SignInPage({
               className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:min-h-[50px]"
             >
               <svg className="h-5 w-5" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                <path
+                  fill="#EA4335"
+                  d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                />
+                <path
+                  fill="#4285F4"
+                  d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                />
               </svg>
               Continue with Google
             </a>
 
             {/* Terms */}
             <p className="text-center text-xs text-[#555252]">
-              By continuing, you agree to our{" "}
-              <Link
-                href="/terms"
-                className="font-bold hover:underline"
-                style={{ color: PRIMARY }}
-              >
+              By continuing, you agree to our{' '}
+              <Link href="/terms" className="font-bold hover:underline" style={{ color: PRIMARY }}>
                 Terms &amp; Conditions
               </Link>
             </p>
 
             {/* Sign up */}
             <p className="pb-4 text-center text-sm font-medium text-[#555252] lg:pb-0">
-              Don&apos;t have an account?{" "}
+              Don&apos;t have an account?{' '}
               <Link
                 href="/sign-up"
                 className="font-semibold hover:underline"

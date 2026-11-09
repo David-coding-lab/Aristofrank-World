@@ -1,9 +1,9 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
-
 
 # AGENTS.md
 
@@ -132,7 +132,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: artist.seoDescription ?? artist.bio,
       images: [{ url: artist.coverImageUrl, width: 1200, height: 630, alt: artist.name }],
     },
-    twitter: { card: "summary_large_image" },
+    twitter: { card: 'summary_large_image' },
   };
 }
 ```
@@ -154,15 +154,15 @@ structured data on entity pages is a bug, not a stylistic choice.
 
 Required schema types:
 
-| Page type        | Required schema(s)                          |
-|------------------|---------------------------------------------|
-| Artist detail    | `Person` (with `sameAs`, `worksFor`/`affiliation`) |
+| Page type        | Required schema(s)                                     |
+| ---------------- | ------------------------------------------------------ |
+| Artist detail    | `Person` (with `sameAs`, `worksFor`/`affiliation`)     |
 | Brand detail     | `Organization` (with `logo`, `sameAs`, `contactPoint`) |
-| Project/campaign | `CreativeWork` (with `creator`, `publisher`) |
-| Homepage         | `WebSite` + `SearchAction` (sitelinks search box) |
-| Breadcrumbs      | `BreadcrumbList` on every artist/brand page |
-| FAQ sections     | `FAQPage`                                   |
-| Article/blog     | `Article` or `BlogPosting`                  |
+| Project/campaign | `CreativeWork` (with `creator`, `publisher`)           |
+| Homepage         | `WebSite` + `SearchAction` (sitelinks search box)      |
+| Breadcrumbs      | `BreadcrumbList` on every artist/brand page            |
+| FAQ sections     | `FAQPage`                                              |
+| Article/blog     | `Article` or `BlogPosting`                             |
 
 Implement structured data in a dedicated server component (e.g. `ArtistJsonLd.tsx`)
 that accepts the entity as a prop and renders the script tag. Never inline ad hoc
@@ -172,8 +172,8 @@ JSON-LD strings in page files.
 // components/features/artists/ArtistJsonLd.tsx
 export function ArtistJsonLd({ artist }: { artist: Artist }) {
   const schema = {
-    "@context": "https://schema.org",
-    "@type": "Person",
+    '@context': 'https://schema.org',
+    '@type': 'Person',
     name: artist.name,
     description: artist.bio,
     image: artist.images,
@@ -217,7 +217,7 @@ export function ArtistJsonLd({ artist }: { artist: Artist }) {
   alt={`${artist.name} — ${artist.genre}`}
   width={800}
   height={800}
-  priority          // only on the above-the-fold hero image
+  priority // only on the above-the-fold hero image
   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
   className="w-full h-auto object-cover"
 />
@@ -341,39 +341,46 @@ Every UI component created or modified must be fully responsive using Tailwind C
 Never ship a component that only works at one viewport size.
 
 ### Layout & Grid
+
 - Use fluid, multi-column grids with responsive breakpoints:
   `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
 - Prefer `gap-*` over margins between grid/flex children.
 - Containers get `w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8` — never a fixed pixel width.
 
 ### Cards
+
 - Cards are always full-width on mobile, then grow into columns: `w-full sm:max-w-sm` or inside a responsive grid.
 - Apply a `max-w-*` cap so cards never stretch uncomfortably wide on large screens.
 - Card internals (image, body, footer) stack vertically by default; go horizontal only with an explicit `sm:flex-row` or `md:flex-row` when it genuinely improves the layout.
 - Padding scales with viewport: `p-4 sm:p-6`.
 
 ### Typography
+
 - Use fluid type scales — never hardcode `text-xl` only; pair sizes across breakpoints:
   `text-base sm:text-lg lg:text-xl`
 - Headings: `text-2xl sm:text-3xl lg:text-4xl` (or larger for hero text).
 - Line lengths stay readable: cap prose content at `max-w-prose` or `max-w-2xl`.
 
 ### Spacing
+
 - All padding/margin uses responsive variants where context changes:
   `py-8 sm:py-12 lg:py-16`, `space-y-4 sm:space-y-6`.
 - Section/page-level vertical rhythm: `px-4 sm:px-6 lg:px-8`.
 
 ### Images & Media
+
 - Always use `next/image` with `sizes` prop reflecting the actual rendered breakpoints.
 - Images inside cards use `w-full h-auto object-cover` with a capped `max-h-*` where needed.
 - Avoid fixed `w-*` or `h-*` on images unless inside a known fixed-size container.
 
 ### Interactive Elements
+
 - Buttons and inputs are full-width on mobile by default, then `w-auto` on larger screens
   where they sit inline: `w-full sm:w-auto`.
 - Touch targets are at least 44×44px — use `min-h-[44px] min-w-[44px]` on icon buttons.
 
 ### Enforcement
+
 - When touching any existing component that is NOT responsive, make it responsive as
   part of that task — don't leave breakage in place.
 - Never use arbitrary fixed widths (`w-[380px]`) for layout — use Tailwind's responsive

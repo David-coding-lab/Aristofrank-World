@@ -1,15 +1,13 @@
-import Link from "next/link"
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 text-center sm:px-6">
       <p className="font-heading text-6xl font-bold text-accent sm:text-7xl">404</p>
-      <h1 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
-        Page not found
-      </h1>
+      <h1 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">Page not found</h1>
       <p className="mt-2 max-w-md text-sm text-muted sm:text-base">
-        The page you&apos;re looking for doesn&apos;t exist or has moved. Let&apos;s
-        get you back to where brands become legends.
+        The page you&apos;re looking for doesn&apos;t exist or has moved. Let&apos;s get you back to
+        where brands become legends.
       </p>
       <Link
         href="/"
@@ -18,5 +16,5 @@ export default function NotFound() {
         Back to Home
       </Link>
     </main>
-  )
+  );
 }

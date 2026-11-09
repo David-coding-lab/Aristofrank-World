@@ -7,5 +7,5 @@ export default function DashboardLoading() {
         <div className="h-24 animate-pulse rounded-xl bg-border" />
       </div>
     </main>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import Link from "next/link"
-import type { ReactNode } from "react"
+import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 interface OutlinedCtaButtonProps {
-  href?: string
-  children: ReactNode
-  className?: string
+  href?: string;
+  children: ReactNode;
+  className?: string;
 }
 
 /** Outlined gold CTA button: 230×51px, radius 60, 1px accent border. */
 export function OutlinedCtaButton({
-  href = "/contact-us",
+  href = '/contact-us',
   children,
-  className = "",
+  className = '',
 }: OutlinedCtaButtonProps) {
   return (
     <Link
@@ -20,5 +20,5 @@ export function OutlinedCtaButton({
     >
       {children}
     </Link>
-  )
+  );
 }

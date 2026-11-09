@@ -1,15 +1,14 @@
-import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel"
-import { ContactForm } from "@/components/features/contact/ContactForm"
-import { pageMetadata } from "@/lib/seo"
+import { AuthBrandPanel } from '@/components/features/auth/AuthBrandPanel';
+import { ContactForm } from '@/components/features/contact/ContactForm';
+import { pageMetadata } from '@/lib/seo';
 
-const PRIMARY = "#181711"
+const PRIMARY = '#181711';
 
 export const metadata = pageMetadata({
-  title: "Contact Us",
-  description:
-    "Start a project, ask a question, or just say hello. We'd love to hear from you.",
-  path: "/contact-us",
-})
+  title: 'Contact Us',
+  description: "Start a project, ask a question, or just say hello. We'd love to hear from you.",
+  path: '/contact-us',
+});
 
 export default function ContactPage() {
   return (
@@ -26,13 +25,13 @@ export default function ContactPage() {
           </h1>
 
           <p className="mb-8 text-center text-sm leading-relaxed text-[#666161] lg:text-left">
-            Tell us about your project, timeline, and budget. We&apos;ll get back to you
-            within one business day.
+            Tell us about your project, timeline, and budget. We&apos;ll get back to you within one
+            business day.
           </p>
 
           <ContactForm />
         </div>
       </div>
     </div>
-  )
+  );
 }

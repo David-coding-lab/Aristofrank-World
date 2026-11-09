@@ -1,5 +1,4 @@
-
-import Link from "next/link";
+import Link from 'next/link';
 
 interface HeroSectionProps {
   ButtonLink?: string;
@@ -8,12 +7,7 @@ interface HeroSectionProps {
   url?: string;
 }
 
-function HeroSection({
-  ButtonLink,
-  HeroText,
-  HeroSubText,
-  url
-}: HeroSectionProps) {
+function HeroSection({ ButtonLink, HeroText, HeroSubText, url }: HeroSectionProps) {
   return (
     <section
       className="
@@ -28,10 +22,7 @@ function HeroSection({
       }}
     >
       {/* Background overlay */}
-      <div
-        className="absolute inset-0 bg-black/20"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
 
       {/* Hero content */}
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center">

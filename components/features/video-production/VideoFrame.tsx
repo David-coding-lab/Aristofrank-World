@@ -1,19 +1,19 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
 interface VideoFrameProps {
-  thumbnailUrl: string
-  onSelect: () => void
-  isActive?: boolean
-  title?: string
-  className?: string
+  thumbnailUrl: string;
+  onSelect: () => void;
+  isActive?: boolean;
+  title?: string;
+  className?: string;
 }
 
 function VideoFrame({
   thumbnailUrl,
   onSelect,
   isActive = false,
-  title = "Play video",
-  className = "",
+  title = 'Play video',
+  className = '',
 }: VideoFrameProps) {
   return (
     <button
@@ -22,7 +22,7 @@ function VideoFrame({
       aria-label={title}
       aria-pressed={isActive}
       className={`group relative block aspect-[8/5] w-full min-w-0 max-w-full cursor-pointer overflow-hidden rounded-2xl bg-black focus:outline-none focus-visible:ring-4 focus-visible:ring-white/60 ${
-        isActive ? "ring-2 ring-[#F5CF0F]" : ""
+        isActive ? 'ring-2 ring-[#F5CF0F]' : ''
       } ${className}`}
     >
       <Image
@@ -52,7 +52,7 @@ function VideoFrame({
         </span>
       </span>
     </button>
-  )
+  );
 }
 
-export default VideoFrame
+export default VideoFrame;

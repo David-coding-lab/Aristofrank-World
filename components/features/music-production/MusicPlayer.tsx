@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import type { Track } from "./TrackList";
+import Image from 'next/image';
+import type { Track } from './TrackList';
 
 interface MusicPlayerProps {
   track: Track | null;
@@ -37,9 +37,7 @@ function MusicPlayer({
       <div className="rounded-2xl bg-[#1A1913] p-5 shadow-2xl shadow-black/50 ring-1 ring-white/5 sm:p-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <p className="font-serif text-lg font-bold text-white sm:text-xl">
-            Playing now
-          </p>
+          <p className="font-serif text-lg font-bold text-white sm:text-xl">Playing now</p>
 
           <button
             type="button"
@@ -47,9 +45,7 @@ function MusicPlayer({
             aria-label="Close player"
             className="flex rounded-full p-1 text-[#A8A28A] transition hover:bg-white/10 hover:text-white"
           >
-            <span className="material-symbols-outlined !text-[22px]">
-              close
-            </span>
+            <span className="material-symbols-outlined !text-[22px]">close</span>
           </button>
         </div>
 
@@ -58,7 +54,7 @@ function MusicPlayer({
           <button
             type="button"
             onClick={onTogglePlay}
-            aria-label={isPlaying ? "Pause" : "Play"}
+            aria-label={isPlaying ? 'Pause' : 'Play'}
             className="group relative h-16 w-16 shrink-0 overflow-hidden rounded-full sm:h-[72px] sm:w-[72px]"
           >
             <Image
@@ -66,16 +62,14 @@ function MusicPlayer({
               alt={track.title}
               fill
               sizes="72px"
-              className={`object-cover ${
-                isPlaying ? "animate-[spin_12s_linear_infinite]" : ""
-              }`}
+              className={`object-cover ${isPlaying ? 'animate-[spin_12s_linear_infinite]' : ''}`}
             />
             <span className="absolute inset-0 flex items-center justify-center bg-black/30 transition group-hover:bg-black/50">
               <span
                 className="material-symbols-outlined !text-[32px] text-white"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
-                {isPlaying ? "pause" : "play_arrow"}
+                {isPlaying ? 'pause' : 'play_arrow'}
               </span>
             </span>
           </button>
@@ -84,12 +78,8 @@ function MusicPlayer({
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="truncate text-lg font-bold text-white sm:text-xl">
-                  {track.title}
-                </p>
-                <p className="mt-1 truncate text-xs font-bold text-[#A8A28A]">
-                  {track.artist}
-                </p>
+                <p className="truncate text-lg font-bold text-white sm:text-xl">{track.title}</p>
+                <p className="mt-1 truncate text-xs font-bold text-[#A8A28A]">{track.artist}</p>
               </div>
 
               {/* Prev / Next */}
@@ -125,10 +115,7 @@ function MusicPlayer({
               aria-valuenow={Math.round(safeProgress)}
               className="mt-3 h-[3px] w-full overflow-hidden bg-white"
             >
-              <div
-                className="h-full bg-accent"
-                style={{ width: `${safeProgress}%` }}
-              />
+              <div className="h-full bg-accent" style={{ width: `${safeProgress}%` }} />
             </div>
           </div>
         </div>

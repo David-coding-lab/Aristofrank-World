@@ -1,10 +1,10 @@
-import "server-only"
+import 'server-only';
 
-import { createHash, randomBytes } from "node:crypto"
+import { createHash, randomBytes } from 'node:crypto';
 
 /** Creates a URL-safe token with 256 bits of entropy. */
 export function generateToken(): string {
-  return randomBytes(32).toString("base64url")
+  return randomBytes(32).toString('base64url');
 }
 
 /**
@@ -12,5 +12,5 @@ export function generateToken(): string {
  * expose usable session, verification, or password-reset tokens.
  */
 export function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex")
+  return createHash('sha256').update(token).digest('hex');
 }

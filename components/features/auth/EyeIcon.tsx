@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 interface EyeIconProps {
-  show: boolean
-  onToggle: () => void
+  show: boolean;
+  onToggle: () => void;
 }
 
 export function EyeIcon({ show, onToggle }: EyeIconProps) {
@@ -11,7 +11,7 @@ export function EyeIcon({ show, onToggle }: EyeIconProps) {
       type="button"
       onClick={onToggle}
       className="min-h-[44px] min-w-[44px] flex items-center justify-center"
-      aria-label={show ? "Hide password" : "Show password"}
+      aria-label={show ? 'Hide password' : 'Show password'}
     >
       <svg
         width="24"
@@ -50,11 +50,11 @@ export function EyeIcon({ show, onToggle }: EyeIconProps) {
           strokeDashoffset="0"
           style={{
             animation: show
-              ? "slashOut 0.3s ease-in-out forwards"
-              : "slashIn 0.3s ease-in-out forwards",
+              ? 'slashOut 0.3s ease-in-out forwards'
+              : 'slashIn 0.3s ease-in-out forwards',
           }}
         />
       </svg>
     </button>
-  )
+  );
 }

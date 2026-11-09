@@ -1,7 +1,7 @@
-import { isIP } from "node:net"
+import { isIP } from 'node:net';
 
 export interface HeaderReader {
-  get(name: string): string | null
+  get(name: string): string | null;
 }
 
 /**
@@ -10,20 +10,20 @@ export interface HeaderReader {
  * before validation so it cannot poison a throttle key.
  */
 export function parseIp(value: string | null | undefined): string | null {
-  if (!value) return null
+  if (!value) return null;
 
-  let candidate = value.trim()
-  if (!candidate) return null
+  let candidate = value.trim();
+  if (!candidate) return null;
 
-  if (candidate.startsWith("[")) {
-    const closingBracket = candidate.indexOf("]")
-    if (closingBracket === -1) return null
-    candidate = candidate.slice(1, closingBracket)
+  if (candidate.startsWith('[')) {
+    const closingBracket = candidate.indexOf(']');
+    if (closingBracket === -1) return null;
+    candidate = candidate.slice(1, closingBracket);
   } else if (/^\d{1,3}(?:\.\d{1,3}){3}:\d+$/.test(candidate)) {
-    candidate = candidate.slice(0, candidate.lastIndexOf(":"))
+    candidate = candidate.slice(0, candidate.lastIndexOf(':'));
   }
 
-  return isIP(candidate) ? candidate : null
+  return isIP(candidate) ? candidate : null;
 }
 
 /**
@@ -33,18 +33,18 @@ export function parseIp(value: string | null | undefined): string | null {
  * them as a throttle key.
  */
 function lastValidForwardedIp(value: string | null): string | null {
-  if (!value) return null
+  if (!value) return null;
 
   const parts = value
-    .split(",")
+    .split(',')
     .map((part) => part.trim())
-    .filter(Boolean)
+    .filter(Boolean);
   for (let index = parts.length - 1; index >= 0; index -= 1) {
-    const ip = parseIp(parts[index])
-    if (ip) return ip
+    const ip = parseIp(parts[index]);
+    if (ip) return ip;
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -55,18 +55,16 @@ function lastValidForwardedIp(value: string | null): string | null {
  * spoofable when an origin is exposed without Cloudflare in front of it.
  */
 export function getClientIp(headersToRead: HeaderReader): string | null {
-  const vercelForwarded = lastValidForwardedIp(
-    headersToRead.get("x-vercel-forwarded-for"),
-  )
-  if (vercelForwarded) return vercelForwarded
+  const vercelForwarded = lastValidForwardedIp(headersToRead.get('x-vercel-forwarded-for'));
+  if (vercelForwarded) return vercelForwarded;
 
-  if (process.env.TRUST_CF_CONNECTING_IP === "true") {
-    const cloudflareIp = parseIp(headersToRead.get("cf-connecting-ip"))
-    if (cloudflareIp) return cloudflareIp
+  if (process.env.TRUST_CF_CONNECTING_IP === 'true') {
+    const cloudflareIp = parseIp(headersToRead.get('cf-connecting-ip'));
+    if (cloudflareIp) return cloudflareIp;
   }
 
-  const realIp = parseIp(headersToRead.get("x-real-ip"))
-  if (realIp) return realIp
+  const realIp = parseIp(headersToRead.get('x-real-ip'));
+  if (realIp) return realIp;
 
-  return lastValidForwardedIp(headersToRead.get("x-forwarded-for"))
+  return lastValidForwardedIp(headersToRead.get('x-forwarded-for'));
 }

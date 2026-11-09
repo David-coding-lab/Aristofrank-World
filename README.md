@@ -59,17 +59,17 @@ printed to the server console instead of being emailed.
 
 ## Available Scripts
 
-| Script              | Description                                      |
-| ------------------- | ------------------------------------------------ |
-| `pnpm dev`          | Start the development server                     |
-| `pnpm build`        | Generate Prisma Client and create a production build |
-| `pnpm start`        | Start the production server                      |
-| `pnpm lint`         | Run ESLint                                       |
-| `pnpm typecheck`    | Generate Next.js route types and run `tsc`       |
-| `pnpm db:generate`  | Generate Prisma Client                           |
-| `pnpm db:migrate`   | Create/apply a migration in development          |
-| `pnpm db:deploy`    | Apply pending migrations in production           |
-| `pnpm db:studio`    | Open Prisma Studio                               |
+| Script             | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| `pnpm dev`         | Start the development server                         |
+| `pnpm build`       | Generate Prisma Client and create a production build |
+| `pnpm start`       | Start the production server                          |
+| `pnpm lint`        | Run ESLint                                           |
+| `pnpm typecheck`   | Generate Next.js route types and run `tsc`           |
+| `pnpm db:generate` | Generate Prisma Client                               |
+| `pnpm db:migrate`  | Create/apply a migration in development              |
+| `pnpm db:deploy`   | Apply pending migrations in production               |
+| `pnpm db:studio`   | Open Prisma Studio                                   |
 
 ## Auth Flow
 

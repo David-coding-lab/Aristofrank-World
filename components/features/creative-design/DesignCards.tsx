@@ -1,5 +1,4 @@
-
-import Image from "next/image";
+import Image from 'next/image';
 
 interface CardProps {
   iconUrl: string;
@@ -7,11 +6,7 @@ interface CardProps {
   cardDescription: string;
 }
 
-function DesignCards({
-  iconUrl,
-  cardTitle,
-  cardDescription,
-}: CardProps) {
+function DesignCards({ iconUrl, cardTitle, cardDescription }: CardProps) {
   return (
     <div
       className="flex w-full flex-col items-center rounded-2xl
@@ -20,13 +15,7 @@ function DesignCards({
     >
       {/* Icon */}
       <div className="relative mb-10 h-20 w-20 sm:mb-12 sm:h-24 sm:w-24">
-        <Image
-          src={iconUrl}
-          alt=""
-          fill
-          sizes="96px"
-          className="object-contain"
-        />
+        <Image src={iconUrl} alt="" fill sizes="96px" className="object-contain" />
       </div>
 
       {/* Title */}

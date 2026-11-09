@@ -1,13 +1,13 @@
-"use client"
+'use client';
 
-import { ErrorState } from "@/components/ui/ErrorState"
+import { ErrorState } from '@/components/ui/ErrorState';
 
 export default function DashboardError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-  return <ErrorState error={error} reset={reset} />
+  return <ErrorState error={error} reset={reset} />;
 }

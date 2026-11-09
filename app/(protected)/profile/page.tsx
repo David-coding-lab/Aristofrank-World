@@ -1,21 +1,21 @@
-import Link from "next/link"
-import { redirect } from "next/navigation"
-import { SiteFooter } from "@/components/features/layout/SiteFooter"
-import { SiteHeader } from "@/components/features/layout/SiteHeader"
-import { Avatar } from "@/components/ui/Avatar"
-import { getCurrentUser } from "@/lib/auth/session"
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { SiteFooter } from '@/components/features/layout/SiteFooter';
+import { SiteHeader } from '@/components/features/layout/SiteHeader';
+import { Avatar } from '@/components/ui/Avatar';
+import { getCurrentUser } from '@/lib/auth/session';
 
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: "Profile — Aristofrank World",
+  title: 'Profile — Aristofrank World',
   robots: { index: false, follow: false },
-}
+};
 
 export default async function ProfilePage() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
   if (!user) {
-    redirect("/sign-in?redirect=/profile")
+    redirect('/sign-in?redirect=/profile');
   }
 
   return (
@@ -24,20 +24,12 @@ export default async function ProfilePage() {
       <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-white/10 bg-[#201F18] p-6 sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <Avatar
-              name={user.name}
-              src={user.image ?? undefined}
-              size={72}
-            />
+            <Avatar name={user.name} src={user.image ?? undefined} size={72} />
             <div className="min-w-0">
-              <h1 className="truncate text-2xl font-bold sm:text-3xl">
-                {user.name}
-              </h1>
-              <p className="mt-1 truncate text-sm text-white/60">
-                {user.email}
-              </p>
+              <h1 className="truncate text-2xl font-bold sm:text-3xl">{user.name}</h1>
+              <p className="mt-1 truncate text-sm text-white/60">{user.email}</p>
               <p className="mt-2 text-xs font-medium uppercase tracking-wide text-accent">
-                {user.emailVerification ? "Email verified" : "Email not verified"}
+                {user.emailVerification ? 'Email verified' : 'Email not verified'}
               </p>
             </div>
           </div>
@@ -60,5 +52,5 @@ export default async function ProfilePage() {
       </main>
       <SiteFooter />
     </div>
-  )
+  );
 }

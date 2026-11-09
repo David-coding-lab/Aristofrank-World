@@ -1,18 +1,16 @@
-import Link from "next/link"
-import type { TestimonialSummary } from "@/lib/content/types"
-import { TestimonialsCarousel } from "./TestimonialsCarousel"
+import Link from 'next/link';
+import type { TestimonialSummary } from '@/lib/content/types';
+import { TestimonialsCarousel } from './TestimonialsCarousel';
 
 interface TestimonialsSectionProps {
-  testimonials: TestimonialSummary[]
+  testimonials: TestimonialSummary[];
 }
 
 /**
  * "Voices Of Our Partners" — social proof in dark charcoal panels, closed by
  * the final "Forge Your Legacy" conversion CTA.
  */
-export function TestimonialsSection({
-  testimonials,
-}: TestimonialsSectionProps) {
+export function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
   return (
     <section className="py-16 sm:py-24 lg:py-28">
       <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -20,8 +18,7 @@ export function TestimonialsSection({
           Voices Of Our Partners
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-relaxed text-white/60 sm:text-base">
-          Testimonials from the brands and artists we have helped transform
-          into legends.
+          Testimonials from the brands and artists we have helped transform into legends.
         </p>
 
         <TestimonialsCarousel testimonials={testimonials} />
@@ -36,5 +33,5 @@ export function TestimonialsSection({
         </div>
       </div>
     </section>
-  )
+  );
 }

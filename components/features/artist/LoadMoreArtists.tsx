@@ -1,17 +1,14 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
-import ArtistCard from "@/components/ui/ArtistCard";
-import type { ArtistSummary } from "@/lib/content/types";
+import { useState } from 'react';
+import ArtistCard from '@/components/ui/ArtistCard';
+import type { ArtistSummary } from '@/lib/content/types';
 
 interface LoadMoreArtistsProps {
   artists: ArtistSummary[];
 }
 
-export default function LoadMoreArtists({
-  artists,
-}: LoadMoreArtistsProps) {
+export default function LoadMoreArtists({ artists }: LoadMoreArtistsProps) {
   const [visibleCount, setVisibleCount] = useState(6);
 
   return (
@@ -25,7 +22,7 @@ export default function LoadMoreArtists({
           <ArtistCard
             key={artist.id}
             artistName={artist.name}
-            artistSongStyle={artist.genre.join(", ")}
+            artistSongStyle={artist.genre.join(', ')}
             profileLink={artist.profileUrl}
             imageUrl={artist.profileImage}
           />
@@ -35,9 +32,7 @@ export default function LoadMoreArtists({
       {visibleCount < artists.length && (
         <button
           type="button"
-          onClick={() =>
-            setVisibleCount((previous) => previous + 6)
-          }
+          onClick={() => setVisibleCount((previous) => previous + 6)}
           className="self-center rounded-md bg-[#393628] px-6 py-3
             text-sm font-medium text-white transition-colors
             hover:bg-[#4a4736]"

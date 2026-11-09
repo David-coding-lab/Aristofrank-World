@@ -1,13 +1,13 @@
-import "server-only"
+import 'server-only';
 
-import { isDatabaseConfigured, prisma } from "@/lib/prisma"
-import type { MusicSummary } from "./types"
+import { isDatabaseConfigured, prisma } from '@/lib/prisma';
+import type { MusicSummary } from './types';
 
 export async function getMusic(limit?: number): Promise<MusicSummary[]> {
-  if (!isDatabaseConfigured) return []
+  if (!isDatabaseConfigured) return [];
 
   return prisma.music.findMany({
-    orderBy: [{ createdAt: "asc" }],
+    orderBy: [{ createdAt: 'asc' }],
     ...(limit ? { take: limit } : {}),
     select: {
       id: true,
@@ -18,13 +18,11 @@ export async function getMusic(limit?: number): Promise<MusicSummary[]> {
       artistProfileUrl: true,
       duration: true,
     },
-  })
+  });
 }
 
-export async function getMusicById(
-  id: string,
-): Promise<MusicSummary | null> {
-  if (!isDatabaseConfigured) return null
+export async function getMusicById(id: string): Promise<MusicSummary | null> {
+  if (!isDatabaseConfigured) return null;
 
   return prisma.music.findUnique({
     where: { id },
@@ -37,5 +35,5 @@ export async function getMusicById(
       artistProfileUrl: true,
       duration: true,
     },
-  })
+  });
 }

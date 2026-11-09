@@ -1,17 +1,13 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
+import { useState } from 'react';
 
 interface ServiceDropDownProps {
   service: string;
   description: string;
 }
 
-function ServiceDropDown({
-  service,
-  description,
-}: ServiceDropDownProps) {
+function ServiceDropDown({ service, description }: ServiceDropDownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -30,15 +26,13 @@ function ServiceDropDown({
           className="material-symbols-outlined shrink-0 text-2xl text-white transition-transform duration-300"
           aria-hidden="true"
         >
-          {isOpen ? "keyboard_arrow_up" : "keyboard_arrow_down"}
+          {isOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
         </span>
       </button>
 
       <div
         className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
-          isOpen
-            ? "mt-3 grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0"
+          isOpen ? 'mt-3 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className="overflow-hidden">

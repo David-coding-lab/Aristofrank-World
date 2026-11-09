@@ -1,27 +1,27 @@
-import Link from "next/link"
-import Image from "next/image"
-import { OutlinedCtaButton } from "@/components/ui/OutlinedCtaButton"
+import Link from 'next/link';
+import Image from 'next/image';
+import { OutlinedCtaButton } from '@/components/ui/OutlinedCtaButton';
 
 const SERVICES = [
   {
-    title: "Brand Strategy",
-    image: "/music.png",
+    title: 'Brand Strategy',
+    image: '/music.png',
     description:
-      "Building captivating brand narratives through defined message, positioning, and voice.",
+      'Building captivating brand narratives through defined message, positioning, and voice.',
   },
   {
-    title: "Visual Identity",
-    image: "/paint.png",
+    title: 'Visual Identity',
+    image: '/paint.png',
     description:
-      "Logos, art direction, and design systems that make brands instantly recognizable and unforgettable.",
+      'Logos, art direction, and design systems that make brands instantly recognizable and unforgettable.',
   },
   {
-    title: "Media Production",
-    image: "/video.png",
+    title: 'Media Production',
+    image: '/video.png',
     description:
-      "Film, photography, and audio production executed with cinematic precision and editorial craft.",
+      'Film, photography, and audio production executed with cinematic precision and editorial craft.',
   },
-]
+];
 
 /**
  * "Crafting Legendary Brands"
@@ -64,10 +64,7 @@ export function ServicesSection() {
                 className="mt-auto inline-flex min-h-[44px] items-center gap-1.5 text-center font-body text-sm font-bold text-accent transition-colors hover:text-white"
               >
                 Learn More
-                <span
-                  className="material-symbols-outlined text-base"
-                  aria-hidden="true"
-                >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">
                   arrow_forward
                 </span>
               </Link>
@@ -80,5 +77,5 @@ export function ServicesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

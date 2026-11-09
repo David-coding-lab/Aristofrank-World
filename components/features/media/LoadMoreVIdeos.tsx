@@ -1,8 +1,7 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
-import Video from "@/components/ui/Video";
+import { useState } from 'react';
+import Video from '@/components/ui/Video';
 
 interface VideoItem {
   id: string;
@@ -15,9 +14,7 @@ interface LoadMoreVideosProps {
   videos: VideoItem[];
 }
 
-export default function LoadMoreVideos({
-  videos,
-}: LoadMoreVideosProps) {
+export default function LoadMoreVideos({ videos }: LoadMoreVideosProps) {
   const [visibleCount, setVisibleCount] = useState(6);
 
   return (
@@ -36,9 +33,7 @@ export default function LoadMoreVideos({
       {visibleCount < videos.length && (
         <button
           type="button"
-          onClick={() =>
-            setVisibleCount((previous) => previous + 6)
-          }
+          onClick={() => setVisibleCount((previous) => previous + 6)}
           className="self-center rounded-md bg-[#393628] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#4a4736]"
         >
           Load More

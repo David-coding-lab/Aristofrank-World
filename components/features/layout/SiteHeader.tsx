@@ -1,5 +1,5 @@
-import { getCurrentUser } from "@/lib/auth/session"
-import { SiteHeaderClient } from "./SiteHeaderClient"
+import { getCurrentUser } from '@/lib/auth/session';
+import { SiteHeaderClient } from './SiteHeaderClient';
 
 /**
  * Server wrapper so the header can reflect the current session without a
@@ -7,7 +7,7 @@ import { SiteHeaderClient } from "./SiteHeaderClient"
  * `SiteHeaderClient`.
  */
 export async function SiteHeader() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
 
   return (
     <SiteHeaderClient
@@ -21,5 +21,5 @@ export async function SiteHeader() {
           : null
       }
     />
-  )
+  );
 }

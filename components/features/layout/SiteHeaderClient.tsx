@@ -1,63 +1,63 @@
-"use client"
+'use client';
 
-import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { AvatarMenu } from "@/components/features/auth/AvatarMenu"
-import { BrandMark } from "./BrandMark"
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { AvatarMenu } from '@/components/features/auth/AvatarMenu';
+import { BrandMark } from './BrandMark';
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Artist", href: "/artist" },
-  { label: "Services", href: "/services" },
-  { label: "Media", href: "/media" },
-  { label: "Events", href: "/events" },
-  { label: "About Us", href: "/about-us" },
-]
+  { label: 'Home', href: '/' },
+  { label: 'Artist', href: '/artist' },
+  { label: 'Services', href: '/services' },
+  { label: 'Media', href: '/media' },
+  { label: 'Events', href: '/events' },
+  { label: 'About Us', href: '/about-us' },
+];
 
 const MENU_LINKS = [
   ...NAV_LINKS,
-  { label: "Blogs", href: "/blogs" },
-  { label: "Contact Us", href: "/contact-us" },
-]
+  { label: 'Blogs', href: '/blogs' },
+  { label: 'Contact Us', href: '/contact-us' },
+];
 
 interface SiteHeaderClientProps {
   user: {
-    name: string
-    email: string
-    image?: string | null
-  } | null
+    name: string;
+    email: string;
+    image?: string | null;
+  } | null;
 }
 
 export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
-  const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!menuOpen) return
+    if (!menuOpen) return;
 
     function handlePointerDown(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false)
+        setMenuOpen(false);
       }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setMenuOpen(false)
+      if (event.key === 'Escape') setMenuOpen(false);
     }
 
-    document.addEventListener("mousedown", handlePointerDown)
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown)
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [menuOpen])
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [menuOpen]);
 
   function isActive(href: string): boolean {
-    if (href === "/") return pathname === "/"
-    return pathname.startsWith(href)
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
   }
 
   const avatarUser = user
@@ -66,30 +66,25 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         email: user.email,
         avatarUrl: user.image ?? undefined,
       }
-    : null
+    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-primary/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <BrandMark className="h-8 w-auto" />
-          <span className="text-lg font-semibold tracking-tight text-white">
-            Aristofrank World
-          </span>
+          <span className="text-lg font-semibold tracking-tight text-white">Aristofrank World</span>
         </Link>
 
-        <nav
-          aria-label="Main navigation"
-          className="hidden items-center gap-6 md:flex"
-        >
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={
                 isActive(link.href)
-                  ? "text-sm font-medium text-accent"
-                  : "text-sm text-white/70 transition-colors hover:text-white"
+                  ? 'text-sm font-medium text-accent'
+                  : 'text-sm text-white/70 transition-colors hover:text-white'
               }
             >
               {link.label}
@@ -119,20 +114,18 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
-          {avatarUser &&
-            <AvatarMenu user={avatarUser} />
-          }
+          {avatarUser && <AvatarMenu user={avatarUser} />}
           <div ref={menuRef} className="relative">
             <button
               type="button"
               onClick={() => setMenuOpen((open) => !open)}
               aria-haspopup="menu"
               aria-expanded={menuOpen}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               className="flex min-h-11 min-w-11 items-center justify-center text-white transition-colors hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <span className="material-symbols-outlined text-2xl">
-                {menuOpen ? "close" : "menu"}
+                {menuOpen ? 'close' : 'menu'}
               </span>
             </button>
 
@@ -191,5 +184,5 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

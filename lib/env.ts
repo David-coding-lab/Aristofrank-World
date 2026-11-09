@@ -1,4 +1,4 @@
-import "server-only"
+import 'server-only';
 
 /**
  * Public origin of this deployment. Keep this in trusted configuration; the
@@ -11,25 +11,25 @@ import "server-only"
  * can fall back to a sane default.
  */
 function normalizeOrigin(value: string): string {
-  const trimmed = value.trim().replace(/\/+$/, "")
-  if (!trimmed) return ""
-  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  const trimmed = value.trim().replace(/\/+$/, '');
+  if (!trimmed) return '';
+  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
   try {
-    const parsed = new URL(candidate)
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-      return parsed.origin
+    const parsed = new URL(candidate);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.origin;
     }
   } catch {
     // Not a parseable origin — leave it to the caller's fallbacks.
   }
-  return ""
+  return '';
 }
 
 function resolveSiteUrl(): string {
-  const configured = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL ?? "")
+  const configured = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL ?? '');
 
   if (configured) {
-    return configured
+    return configured;
   }
 
   // Vercel injects per-deployment URLs for every build. Prefer the project's
@@ -40,42 +40,41 @@ function resolveSiteUrl(): string {
     process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
       process.env.NEXT_PUBLIC_VERCEL_URL ??
       process.env.VERCEL_URL ??
-      "",
-  )
+      ''
+  );
   if (vercelUrl) {
-    return vercelUrl
+    return vercelUrl;
   }
 
-  if (process.env.NODE_ENV === "production" && !vercelUrl) {
+  if (process.env.NODE_ENV === 'production' && !vercelUrl) {
     // Other hosts do not inject a deployment origin. Metadata is still emitted
     // with relative og:image paths; consumers that need an absolute origin
     // guard on `siteUrl`.
-    return ""
+    return '';
   }
 
-  return "http://localhost:3000"
+  return 'http://localhost:3000';
 }
 
-export const siteUrl = resolveSiteUrl()
+export const siteUrl = resolveSiteUrl();
 
 const googleRedirectUri =
-  process.env.GOOGLE_REDIRECT_URI?.trim() ||
-  (siteUrl ? `${siteUrl}/api/auth/google/callback` : "")
+  process.env.GOOGLE_REDIRECT_URI?.trim() || (siteUrl ? `${siteUrl}/api/auth/google/callback` : '');
 
 export const env = {
   siteUrl,
-  databaseUrl: process.env.DATABASE_URL ?? "",
+  databaseUrl: process.env.DATABASE_URL ?? '',
   email: {
-    apiKey: process.env.RESEND_API_KEY ?? "",
-    from: process.env.EMAIL_FROM ?? "",
+    apiKey: process.env.RESEND_API_KEY ?? '',
+    from: process.env.EMAIL_FROM ?? '',
   },
   google: {
-    clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     redirectUri: googleRedirectUri,
   },
-} as const
+} as const;
 
 export function hasEmailConfig(): boolean {
-  return Boolean(env.siteUrl && env.email.apiKey && env.email.from)
+  return Boolean(env.siteUrl && env.email.apiKey && env.email.from);
 }

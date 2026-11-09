@@ -11,5 +11,5 @@ export default function MusicLoading() {
         ))}
       </div>
     </div>
-  )
+  );
 }

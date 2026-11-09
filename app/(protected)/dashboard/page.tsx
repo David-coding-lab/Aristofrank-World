@@ -1,13 +1,13 @@
-import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth/session"
+import { redirect } from 'next/navigation';
+import { getCurrentUser } from '@/lib/auth/session';
 
 // Per-user data — always fresh, never indexed.
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: "Dashboard",
+  title: 'Dashboard',
   robots: { index: false, follow: false },
-}
+};
 
 /**
  * Placeholder protected route. `proxy.ts` already handles the redirect for
@@ -15,9 +15,9 @@ export const metadata = {
  * expired session that proxy.ts can't see) so this page never renders empty.
  */
 export default async function DashboardPage() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
   if (!user) {
-    redirect("/sign-in?redirect=/dashboard")
+    redirect('/sign-in?redirect=/dashboard');
   }
 
   return (
@@ -28,22 +28,16 @@ export default async function DashboardPage() {
       </p>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-border bg-surface p-4 sm:p-6">
-          <h2 className="font-heading text-lg font-semibold sm:text-xl">
-            Placeholder Panel
-          </h2>
+          <h2 className="font-heading text-lg font-semibold sm:text-xl">Placeholder Panel</h2>
           <p className="mt-1 text-sm text-muted">
             Scaffold content — replace with real dashboard widgets.
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface p-4 sm:p-6">
-          <h2 className="font-heading text-lg font-semibold sm:text-xl">
-            Account
-          </h2>
-          <p className="mt-1 text-sm text-muted">
-            Signed in as {user.email}.
-          </p>
+          <h2 className="font-heading text-lg font-semibold sm:text-xl">Account</h2>
+          <p className="mt-1 text-sm text-muted">Signed in as {user.email}.</p>
         </div>
       </div>
     </main>
-  )
+  );
 }

@@ -1,41 +1,38 @@
-import Link from "next/link"
-import { siteUrl } from "@/lib/env"
+import Link from 'next/link';
+import { siteUrl } from '@/lib/env';
 
 interface ArtistBreadcrumbsProps {
-  artistName: string
-  artistSlug: string
+  artistName: string;
+  artistSlug: string;
 }
 
 /** Visible breadcrumbs plus the matching BreadcrumbList structured data. */
-export function ArtistBreadcrumbs({
-  artistName,
-  artistSlug,
-}: ArtistBreadcrumbsProps) {
-  const base = siteUrl || "http://localhost:3000"
+export function ArtistBreadcrumbs({ artistName, artistSlug }: ArtistBreadcrumbsProps) {
+  const base = siteUrl || 'http://localhost:3000';
   const schema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
     itemListElement: [
       {
-        "@type": "ListItem",
+        '@type': 'ListItem',
         position: 1,
-        name: "Home",
+        name: 'Home',
         item: `${base}/`,
       },
       {
-        "@type": "ListItem",
+        '@type': 'ListItem',
         position: 2,
-        name: "Artists",
+        name: 'Artists',
         item: `${base}/artist`,
       },
       {
-        "@type": "ListItem",
+        '@type': 'ListItem',
         position: 3,
         name: artistName,
         item: `${base}${artistSlug}`,
       },
     ],
-  }
+  };
 
   return (
     <>
@@ -61,9 +58,9 @@ export function ArtistBreadcrumbs({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(schema).replace(/</g, '\\u003c'),
         }}
       />
     </>
-  )
+  );
 }

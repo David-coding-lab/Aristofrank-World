@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation';
 
 interface BackButtonProps {
-  variant?: "text" | "icon"
+  variant?: 'text' | 'icon';
 }
 
-export default function BackButton({ variant = "text" }: BackButtonProps) {
-  const router = useRouter()
+export default function BackButton({ variant = 'text' }: BackButtonProps) {
+  const router = useRouter();
 
-  if (variant === "icon") {
+  if (variant === 'icon') {
     return (
       <button
         type="button"
@@ -19,7 +19,7 @@ export default function BackButton({ variant = "text" }: BackButtonProps) {
       >
         <span className="material-symbols-outlined text-xl">chevron_backward</span>
       </button>
-    )
+    );
   }
 
   return (
@@ -31,5 +31,5 @@ export default function BackButton({ variant = "text" }: BackButtonProps) {
       <span className="material-symbols-outlined text-lg">arrow_back</span>
       Back
     </button>
-  )
+  );
 }

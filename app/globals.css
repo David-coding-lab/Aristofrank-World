@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --font-playfair: var(--font-playfair), serif;
@@ -7,16 +7,16 @@
 
 :root {
   --color-primary: #181711;
-  --color-secondary: #FFFFFF;
-  --color-accent: #F2CC0D;
-  --color-background: #FFFFFF;
-  --color-surface: #F8F8FA;
-  --color-panel: #211E17;
+  --color-secondary: #ffffff;
+  --color-accent: #f2cc0d;
+  --color-background: #ffffff;
+  --color-surface: #f8f8fa;
+  --color-panel: #211e17;
   --color-dark: #181711;
-  --color-muted: #6B7280;
-  --color-sand: #ACA790;
-  --color-error: #DC2626;
-  --color-border: #E5E7EB;
+  --color-muted: #6b7280;
+  --color-sand: #aca790;
+  --color-error: #dc2626;
+  --color-border: #e5e7eb;
 }
 
 @theme inline {
@@ -49,6 +49,11 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-body), Georgia, serif;
 }

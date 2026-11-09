@@ -1,24 +1,18 @@
-"use client"
+'use client';
 
-import { useRef } from "react"
-import type { TestimonialSummary } from "@/lib/content/types"
+import { useRef } from 'react';
+import type { TestimonialSummary } from '@/lib/content/types';
 
 interface TestimonialsCarouselProps {
-  testimonials: TestimonialSummary[]
+  testimonials: TestimonialSummary[];
 }
 
 function Star() {
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="#F2CC0D"
-      aria-hidden="true"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="#F2CC0D" aria-hidden="true">
       <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
     </svg>
-  )
+  );
 }
 
 /**
@@ -27,27 +21,25 @@ function Star() {
  */
 function escapeHtml(value: string): string {
   return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
-export function TestimonialsCarousel({
-  testimonials = [],
-}: TestimonialsCarouselProps) {
-  const trackRef = useRef<HTMLDivElement>(null)
+export function TestimonialsCarousel({ testimonials = [] }: TestimonialsCarouselProps) {
+  const trackRef = useRef<HTMLDivElement>(null);
 
   function scrollByCards(direction: 1 | -1) {
-    const track = trackRef.current
-    if (!track) return
-    const firstCard = track.querySelector<HTMLElement>("[data-card]")
-    const step = firstCard ? firstCard.offsetWidth + 24 : 420
-    track.scrollBy({ left: direction * step, behavior: "smooth" })
+    const track = trackRef.current;
+    if (!track) return;
+    const firstCard = track.querySelector<HTMLElement>('[data-card]');
+    const step = firstCard ? firstCard.offsetWidth + 24 : 420;
+    track.scrollBy({ left: direction * step, behavior: 'smooth' });
   }
 
-  if (testimonials.length === 0) return null
+  if (testimonials.length === 0) return null;
 
   return (
     <div className="mt-12">
@@ -114,5 +106,5 @@ export function TestimonialsCarousel({
         </button>
       </div>
     </div>
-  )
+  );
 }

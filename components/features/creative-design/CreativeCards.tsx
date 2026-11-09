@@ -1,5 +1,4 @@
-
-import Image from "next/image";
+import Image from 'next/image';
 
 interface CreativeCardsProps {
   designDescription: string;
@@ -7,11 +6,7 @@ interface CreativeCardsProps {
   designTitle: string;
 }
 
-function CreativeCards({
-  designDescription,
-  designImgUrl,
-  designTitle,
-}: CreativeCardsProps) {
+function CreativeCards({ designDescription, designImgUrl, designTitle }: CreativeCardsProps) {
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-[#1A1814]">
       {/* Image */}

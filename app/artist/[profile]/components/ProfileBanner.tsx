@@ -1,20 +1,20 @@
-import Image from "next/image"
+import Image from 'next/image';
 
 interface ProfileBannerProps {
-  artistName: string
-  artistDescription: string
-  artistImage: string
-  artistSongStyle: string
+  artistName: string;
+  artistDescription: string;
+  artistImage: string;
+  artistSongStyle: string;
 }
 
 /** Escape user-controlled text to prevent XSS when rendering bio content. */
 function escapeHtml(value: string): string {
   return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 function ProfileBanner({
@@ -37,20 +37,16 @@ function ProfileBanner({
       </div>
 
       <div className="flex flex-1 flex-col">
-        <p className="text-xl md:text-lg font-semibold text-accent">
-          {artistSongStyle}
-        </p>
+        <p className="text-xl md:text-lg font-semibold text-accent">{artistSongStyle}</p>
 
-        <h1 className="mt-4 lg:text-4xl text-2xl font-bold text-white">
-          {artistName}
-        </h1>
+        <h1 className="mt-4 lg:text-4xl text-2xl font-bold text-white">{artistName}</h1>
 
         <p className="mt-6 max-w-xl text-base font-semibold leading-relaxed text-neutral-400">
           {escapeHtml(artistDescription)}
         </p>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProfileBanner
+export default ProfileBanner;

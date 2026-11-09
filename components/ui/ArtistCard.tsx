@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 interface ArtistCardProps {
   artistName: string;
@@ -7,12 +7,7 @@ interface ArtistCardProps {
   imageUrl: string;
 }
 
-const ArtistCard = ({
-  artistName,
-  artistSongStyle,
-  profileLink,
-  imageUrl,
-}: ArtistCardProps) => {
+const ArtistCard = ({ artistName, artistSongStyle, profileLink, imageUrl }: ArtistCardProps) => {
   return (
     <div
       className="relative isolate flex aspect-[3/4] w-full 
@@ -25,13 +20,17 @@ const ArtistCard = ({
 
       {/* Bottom content */}
       <div className="p-5 sm:p-6">
-        <h2 className="font-['Playfair_Display'] text-xl font-bold 
-          leading-tight text-white sm:text-2xl">
+        <h2
+          className="font-['Playfair_Display'] text-xl font-bold 
+          leading-tight text-white sm:text-2xl"
+        >
           {artistName}
         </h2>
 
-        <h4 className="mt-1 font-['Open_Sans'] text-sm font-medium 
-          text-accent sm:text-base">
+        <h4
+          className="mt-1 font-['Open_Sans'] text-sm font-medium 
+          text-accent sm:text-base"
+        >
           {artistSongStyle}
         </h4>
 
@@ -48,4 +47,4 @@ const ArtistCard = ({
   );
 };
 
-export default ArtistCard
+export default ArtistCard;

@@ -1,34 +1,34 @@
-import { siteUrl } from "@/lib/env"
-import type { ArtistDetail } from "@/lib/content/types"
+import { siteUrl } from '@/lib/env';
+import type { ArtistDetail } from '@/lib/content/types';
 
 interface ArtistJsonLdProps {
-  artist: ArtistDetail
+  artist: ArtistDetail;
 }
 
 /** Server-rendered Person structured data for an artist profile. */
 export function ArtistJsonLd({ artist }: ArtistJsonLdProps) {
-  const base = siteUrl || "http://localhost:3000"
+  const base = siteUrl || 'http://localhost:3000';
   const schema = {
-    "@context": "https://schema.org",
-    "@type": "Person",
+    '@context': 'https://schema.org',
+    '@type': 'Person',
     name: artist.name,
     description: artist.bio,
     image: artist.profileImage,
     url: `${base}${artist.profileUrl}`,
-    jobTitle: artist.genre.join(", "),
+    jobTitle: artist.genre.join(', '),
     worksFor: {
-      "@type": "Organization",
-      name: "Aristofrank World",
+      '@type': 'Organization',
+      name: 'Aristofrank World',
       url: base,
     },
-  }
+  };
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
+        __html: JSON.stringify(schema).replace(/</g, '\\u003c'),
       }}
     />
-  )
+  );
 }

@@ -1,13 +1,13 @@
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL ?? "",
+  connectionString: process.env.DATABASE_URL ?? '',
 });
 
 const prisma = new PrismaClient({
   adapter,
-  log: ["error", "warn"],
+  log: ['error', 'warn'],
 });
 
 async function main() {
@@ -50,4 +50,6 @@ async function main() {
   console.log('Tables created successfully');
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

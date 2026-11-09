@@ -1,14 +1,14 @@
-import type { Metadata } from "next"
+import type { Metadata } from 'next';
 
 interface PageMetadataInput {
-  title: string
-  description: string
-  path: string
-  imageUrl?: string
-  imageAlt?: string
+  title: string;
+  description: string;
+  path: string;
+  imageUrl?: string;
+  imageAlt?: string;
 }
 
-const DEFAULT_OG_IMAGE = "/opengraph-image"
+const DEFAULT_OG_IMAGE = '/opengraph-image';
 
 /**
  * Builds the metadata contract required for every public route: title,
@@ -27,7 +27,7 @@ export function pageMetadata({
     width: 1200,
     height: 630,
     alt: imageAlt ?? title,
-  }
+  };
 
   return {
     title,
@@ -37,21 +37,21 @@ export function pageMetadata({
       title,
       description,
       url: path,
-      type: "website",
+      type: 'website',
       images: [image],
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title,
       description,
       images: [imageUrl],
     },
-  }
+  };
 }
 
 /** Keeps meta descriptions inside the 120–155 character target. */
 export function truncateDescription(text: string, maxLength = 155): string {
-  const normalized = text.replace(/\s+/g, " ").trim()
-  if (normalized.length <= maxLength) return normalized
-  return `${normalized.slice(0, maxLength - 1).trimEnd()}…`
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (normalized.length <= maxLength) return normalized;
+  return `${normalized.slice(0, maxLength - 1).trimEnd()}…`;
 }

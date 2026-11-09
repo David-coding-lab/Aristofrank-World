@@ -1,37 +1,37 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Link from "next/link"
-import { AuthBrandPanel } from "@/components/features/auth/AuthBrandPanel"
-import { requestPasswordResetAction } from "@/lib/auth/actions"
-import { emailSchema } from "@/lib/validations/auth"
+import { useState } from 'react';
+import Link from 'next/link';
+import { AuthBrandPanel } from '@/components/features/auth/AuthBrandPanel';
+import { requestPasswordResetAction } from '@/lib/auth/actions';
+import { emailSchema } from '@/lib/validations/auth';
 
-const PRIMARY = "#181711"
+const PRIMARY = '#181711';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [sent, setSent] = useState(false)
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault()
-    setError(null)
+    event.preventDefault();
+    setError(null);
 
-    const parsed = emailSchema.safeParse(email)
+    const parsed = emailSchema.safeParse(email);
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Enter a valid email")
-      return
+      setError(parsed.error.issues[0]?.message ?? 'Enter a valid email');
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      await requestPasswordResetAction(parsed.data)
-      setSent(true)
+      await requestPasswordResetAction(parsed.data);
+      setSent(true);
     } catch {
-      setError("Something went wrong. Please try again.")
+      setError('Something went wrong. Please try again.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -48,26 +48,18 @@ export default function ForgotPasswordPage() {
             Forgot your password?
           </h1>
           <p className="mb-6 text-center text-sm leading-relaxed text-[#666161] lg:text-left">
-            Enter the email on your account and we&apos;ll send a link to choose
-            a new password.
+            Enter the email on your account and we&apos;ll send a link to choose a new password.
           </p>
 
           {sent ? (
             <div className="rounded-[10px] bg-green-50 px-4 py-4 text-sm text-green-700">
-              If an account exists for that email, a reset link has been sent.
-              Check your inbox and spam folder.
+              If an account exists for that email, a reset link has been sent. Check your inbox and
+              spam folder.
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              noValidate
-              className="flex flex-col gap-4 sm:gap-5"
-            >
+            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 sm:gap-5">
               {error && (
-                <p
-                  role="alert"
-                  className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600"
-                >
+                <p role="alert" className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600">
                   {error}
                 </p>
               )}
@@ -89,7 +81,7 @@ export default function ForgotPasswordPage() {
                 className="min-h-[48px] w-full rounded-xl font-medium text-white transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60 sm:min-h-[50px]"
                 style={{ backgroundColor: PRIMARY }}
               >
-                {isSubmitting ? "Sending…" : "Send reset link"}
+                {isSubmitting ? 'Sending…' : 'Send reset link'}
               </button>
             </form>
           )}
@@ -102,5 +94,5 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

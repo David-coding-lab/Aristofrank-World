@@ -1,19 +1,18 @@
-import { SiteHeader } from "@/components/features/layout/SiteHeader"
-import { SiteFooter } from "@/components/features/layout/SiteFooter"
-import HeroSection from "@/components/ui/HeroSection"
-import EventCard from "@/components/features/events/EventCard"
-import { getEvents } from "@/lib/content/events"
-import { pageMetadata } from "@/lib/seo"
+import { SiteHeader } from '@/components/features/layout/SiteHeader';
+import { SiteFooter } from '@/components/features/layout/SiteFooter';
+import HeroSection from '@/components/ui/HeroSection';
+import EventCard from '@/components/features/events/EventCard';
+import { getEvents } from '@/lib/content/events';
+import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: "Events",
-  description:
-    "Join us at upcoming events, get tickets, and discover event hosting services.",
-  path: "/events",
-})
+  title: 'Events',
+  description: 'Join us at upcoming events, get tickets, and discover event hosting services.',
+  path: '/events',
+});
 
 export default async function EventsPage() {
-  const events = await getEvents()
+  const events = await getEvents();
 
   return (
     <div className="w-full h-fit bg-primary">
@@ -41,5 +40,5 @@ export default async function EventsPage() {
       </section>
       <SiteFooter />
     </div>
-  )
+  );
 }

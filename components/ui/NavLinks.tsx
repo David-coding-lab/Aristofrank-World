@@ -1,7 +1,6 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
+import { useState } from 'react';
 
 interface NavLinksProps {
   links: string[];
@@ -9,14 +8,8 @@ interface NavLinksProps {
   onChange?: (link: string) => void;
 }
 
-function NavLinks({
-  links,
-  defaultActive,
-  onChange,
-}: NavLinksProps) {
-  const [activeLink, setActiveLink] = useState(
-    defaultActive ?? links[0] ?? ""
-  );
+function NavLinks({ links, defaultActive, onChange }: NavLinksProps) {
+  const [activeLink, setActiveLink] = useState(defaultActive ?? links[0] ?? '');
 
   const handleClick = (link: string) => {
     setActiveLink(link);
@@ -39,8 +32,8 @@ function NavLinks({
             whitespace-nowrap transition-colors duration-200
             ${
               activeLink === link
-                ? "bg-accent text-[#171611]"
-                : "bg-[#393628] text-white hover:bg-[#4A4737]"
+                ? 'bg-accent text-[#171611]'
+                : 'bg-[#393628] text-white hover:bg-[#4A4737]'
             }
           `}
         >

@@ -1,4 +1,4 @@
-export type { User } from "./user"
+export type { User } from './user';
 export type {
   AuthState,
   SignInCredentials,
@@ -9,4 +9,4 @@ export type {
   RequestPasswordResetResult,
   ResetPasswordResult,
   FieldErrors,
-} from "./auth"
+} from './auth';

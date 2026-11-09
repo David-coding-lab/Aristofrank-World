@@ -1,21 +1,21 @@
-import type { Metadata } from "next"
-import { Playfair_Display, Open_Sans } from "next/font/google"
-import "material-symbols/outlined.css"
-import "./globals.css"
-import { NavigationProgress } from "@/components/ui/NavigationProgress"
-import { siteUrl } from "@/lib/env"
+import type { Metadata } from 'next';
+import { Playfair_Display, Open_Sans } from 'next/font/google';
+import 'material-symbols/outlined.css';
+import './globals.css';
+import { NavigationProgress } from '@/components/ui/NavigationProgress';
+import { siteUrl } from '@/lib/env';
 
 const playfair = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-playfair",
-})
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+});
 
 const openSans = Open_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-open-sans",
-})
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-open-sans',
+});
 
 /**
  * Resolves the deployment origin for absolute metadata URLs (og:image,
@@ -26,33 +26,33 @@ export function generateMetadata(): Metadata {
   return {
     metadataBase: siteUrl ? new URL(siteUrl) : undefined,
     title: {
-      default: "Aristofrank World | Where Brands Become Legends",
-      template: "%s | Aristofrank World",
+      default: 'Aristofrank World | Where Brands Become Legends',
+      template: '%s | Aristofrank World',
     },
     description:
-      "Aristofrank World is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.",
+      'Aristofrank World is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.',
     icons: {
-      icon: { url: "/favicon.svg", type: "image/svg+xml" },
+      icon: { url: '/favicon.svg', type: 'image/svg+xml' },
     },
     openGraph: {
-      type: "website",
-      locale: "en_NG",
-      siteName: "Aristofrank World",
-      title: "Aristofrank World | Where Brands Become Legends",
+      type: 'website',
+      locale: 'en_NG',
+      siteName: 'Aristofrank World',
+      title: 'Aristofrank World | Where Brands Become Legends',
       description:
-        "A premium creative agency and artist management company helping brands and artists become legends.",
+        'A premium creative agency and artist management company helping brands and artists become legends.',
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
     },
     robots: { index: true, follow: true },
-  }
+  };
 }
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -65,5 +65,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-  )
+  );
 }

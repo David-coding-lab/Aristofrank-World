@@ -1,13 +1,13 @@
-import "server-only"
+import 'server-only';
 
-import { isDatabaseConfigured, prisma } from "@/lib/prisma"
-import type { MediaSummary } from "./types"
+import { isDatabaseConfigured, prisma } from '@/lib/prisma';
+import type { MediaSummary } from './types';
 
 export async function getMedia(): Promise<MediaSummary[]> {
-  if (!isDatabaseConfigured) return []
+  if (!isDatabaseConfigured) return [];
 
   return prisma.media.findMany({
-    orderBy: [{ createdAt: "desc" }],
+    orderBy: [{ createdAt: 'desc' }],
     select: {
       id: true,
       title: true,
@@ -15,5 +15,5 @@ export async function getMedia(): Promise<MediaSummary[]> {
       sourceUrl: true,
       category: true,
     },
-  })
+  });
 }

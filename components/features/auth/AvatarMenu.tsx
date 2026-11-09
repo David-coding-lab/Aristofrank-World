@@ -1,68 +1,65 @@
-"use client"
+'use client';
 
-import { useEffect, useRef, useState, useTransition } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Avatar } from "@/components/ui/Avatar"
-import { signOutAction } from "@/lib/auth/actions"
+import { useEffect, useRef, useState, useTransition } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Avatar } from '@/components/ui/Avatar';
+import { signOutAction } from '@/lib/auth/actions';
 
 interface AvatarMenuProps {
-  user: { name: string; email: string; avatarUrl?: string }
+  user: { name: string; email: string; avatarUrl?: string };
 }
 
 interface MenuLink {
-  label: string
-  href: string
-  icon: string
+  label: string;
+  href: string;
+  icon: string;
 }
 
 // Menu destinations — all live under (protected) and are guarded by proxy.ts.
 const MENU_LINKS: MenuLink[] = [
-  { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
-  { label: "Profile", href: "/profile", icon: "person" },
-]
+  { label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
+  { label: 'Profile', href: '/profile', icon: 'person' },
+];
 
 /**
  * Account avatar with a click-to-open dropdown for the signed-in user. Closes on
  * outside click, Escape, or navigation; the final item signs the user out.
  */
 export function AvatarMenu({ user }: AvatarMenuProps) {
-  const [open, setOpen] = useState(false)
-  const [isSigningOut, startSignOut] = useTransition()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const [isSigningOut, startSignOut] = useTransition();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
     function handlePointerDown(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false)
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
       }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false)
+      if (event.key === 'Escape') setOpen(false);
     }
 
-    document.addEventListener("mousedown", handlePointerDown)
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown)
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [open])
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
 
   function handleSignOut() {
     startSignOut(async () => {
-      await signOutAction()
-      setOpen(false)
-      router.push("/")
-      router.refresh()
-    })
+      await signOutAction();
+      setOpen(false);
+      router.push('/');
+      router.refresh();
+    });
   }
 
   return (
@@ -87,12 +84,8 @@ export function AvatarMenu({ user }: AvatarMenuProps) {
           <div className="flex items-center gap-3 border-b border-[var(--color-border)] px-4 py-3">
             <Avatar name={user.name} src={user.avatarUrl} size={40} />
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-[var(--color-dark)]">
-                {user.name}
-              </p>
-              <p className="truncate text-xs text-[var(--color-muted)]">
-                {user.email}
-              </p>
+              <p className="truncate text-sm font-semibold text-[var(--color-dark)]">{user.name}</p>
+              <p className="truncate text-xs text-[var(--color-muted)]">{user.email}</p>
             </div>
           </div>
 
@@ -107,7 +100,7 @@ export function AvatarMenu({ user }: AvatarMenuProps) {
                 >
                   <span
                     className="material-symbols-outlined text-[var(--color-muted)]"
-                    style={{ fontSize: "20px" }}
+                    style={{ fontSize: '20px' }}
                   >
                     {item.icon}
                   </span>
@@ -125,17 +118,14 @@ export function AvatarMenu({ user }: AvatarMenuProps) {
               disabled={isSigningOut}
               className="flex min-h-[44px] w-full items-center gap-3 px-4 py-2.5 text-sm text-[var(--color-error)] transition-colors hover:bg-red-50 disabled:opacity-60"
             >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "20px" }}
-              >
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                 logout
               </span>
-              {isSigningOut ? "Logging out…" : "Log out"}
+              {isSigningOut ? 'Logging out…' : 'Log out'}
             </button>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

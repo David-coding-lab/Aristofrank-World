@@ -1,23 +1,23 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { submitContactAction } from "@/lib/actions/contact"
-import { contactSchema, fieldErrorsOf } from "@/lib/validations/contact"
-import type { FieldErrors } from "@/types"
+import { useState } from 'react';
+import { submitContactAction } from '@/lib/actions/contact';
+import { contactSchema, fieldErrorsOf } from '@/lib/validations/contact';
+import type { FieldErrors } from '@/types';
 
-const PRIMARY = "#181711"
+const PRIMARY = '#181711';
 
 function FieldError({ message }: { message?: string }) {
-  if (!message) return null
-  return <p className="mt-1 text-xs text-red-500">{message}</p>
+  if (!message) return null;
+  return <p className="mt-1 text-xs text-red-500">{message}</p>;
 }
 
 function ServicesDropdown({
   value,
   onChange,
 }: {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }) {
   return (
     <select
@@ -35,27 +35,27 @@ function ServicesDropdown({
       <option value="artist-management">Artist Management</option>
       <option value="other">Other</option>
     </select>
-  )
+  );
 }
 
 export function ContactForm() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [company, setCompany] = useState("")
-  const [service, setService] = useState("")
-  const [budget, setBudget] = useState("")
-  const [message, setMessage] = useState("")
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [company, setCompany] = useState('');
+  const [service, setService] = useState('');
+  const [budget, setBudget] = useState('');
+  const [message, setMessage] = useState('');
 
-  const [errors, setErrors] = useState<FieldErrors>({})
-  const [formError, setFormError] = useState<string | null>(null)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    setFormError(null)
-    setFormSuccess(false)
+    event.preventDefault();
+    setFormError(null);
+    setFormSuccess(false);
 
     const parsed = contactSchema.safeParse({
       name,
@@ -65,45 +65,43 @@ export function ContactForm() {
       service,
       budget,
       message,
-    })
+    });
     if (!parsed.success) {
-      setErrors(fieldErrorsOf(parsed.error))
-      return
+      setErrors(fieldErrorsOf(parsed.error));
+      return;
     }
-    setErrors({})
-    setIsSubmitting(true)
+    setErrors({});
+    setIsSubmitting(true);
 
     try {
-      const result = await submitContactAction(parsed.data)
+      const result = await submitContactAction(parsed.data);
       if (result.ok) {
-        setFormSuccess(true)
-        setName("")
-        setEmail("")
-        setPhone("")
-        setCompany("")
-        setService("")
-        setBudget("")
-        setMessage("")
-      } else if (result.reason === "rate_limit") {
-        setFormError("Too many submissions. Please wait a moment and try again.")
+        setFormSuccess(true);
+        setName('');
+        setEmail('');
+        setPhone('');
+        setCompany('');
+        setService('');
+        setBudget('');
+        setMessage('');
+      } else if (result.reason === 'rate_limit') {
+        setFormError('Too many submissions. Please wait a moment and try again.');
       } else {
-        setFormError("Could not send your message. Please try again.")
+        setFormError('Could not send your message. Please try again.');
       }
     } catch {
-      setFormError("Something went wrong. Please try again.")
+      setFormError('Something went wrong. Please try again.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const inputBase = (hasError: boolean) =>
     [
-      "w-full h-[50px] rounded-[10px] bg-[#F3F3F3] px-4 text-[15px] text-[#666161]",
-      "outline-none transition-all duration-150 focus:ring-2",
-      hasError
-        ? "ring-2 ring-red-500 focus:ring-red-500"
-        : "ring-0 focus:ring-[#181711]",
-    ].join(" ")
+      'w-full h-[50px] rounded-[10px] bg-[#F3F3F3] px-4 text-[15px] text-[#666161]',
+      'outline-none transition-all duration-150 focus:ring-2',
+      hasError ? 'ring-2 ring-red-500 focus:ring-red-500' : 'ring-0 focus:ring-[#181711]',
+    ].join(' ');
 
   if (formSuccess) {
     return (
@@ -113,22 +111,21 @@ export function ContactForm() {
           We&apos;ve received your message and will reply within one business day.
         </p>
       </div>
-    )
+    );
   }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 sm:gap-5">
       {formError && (
-        <p
-          role="alert"
-          className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600"
-        >
+        <p role="alert" className="rounded-[10px] bg-red-50 px-4 py-3 text-sm text-red-600">
           {formError}
         </p>
       )}
 
       <div>
-        <label htmlFor="name" className="sr-only">Name</label>
+        <label htmlFor="name" className="sr-only">
+          Name
+        </label>
         <input
           type="text"
           id="name"
@@ -143,7 +140,9 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="email" className="sr-only">Email</label>
+        <label htmlFor="email" className="sr-only">
+          Email
+        </label>
         <input
           type="email"
           id="email"
@@ -158,7 +157,9 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="phone" className="sr-only">Phone (optional)</label>
+        <label htmlFor="phone" className="sr-only">
+          Phone (optional)
+        </label>
         <input
           type="tel"
           id="phone"
@@ -173,7 +174,9 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="company" className="sr-only">Company (optional)</label>
+        <label htmlFor="company" className="sr-only">
+          Company (optional)
+        </label>
         <input
           type="text"
           id="company"
@@ -188,13 +191,17 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="service" className="sr-only">Service of interest</label>
+        <label htmlFor="service" className="sr-only">
+          Service of interest
+        </label>
         <ServicesDropdown value={service} onChange={setService} />
         <FieldError message={errors.service} />
       </div>
 
       <div>
-        <label htmlFor="budget" className="sr-only">Budget range (optional)</label>
+        <label htmlFor="budget" className="sr-only">
+          Budget range (optional)
+        </label>
         <input
           type="text"
           id="budget"
@@ -209,7 +216,9 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="sr-only">Message</label>
+        <label htmlFor="message" className="sr-only">
+          Message
+        </label>
         <textarea
           id="message"
           name="message"
@@ -219,8 +228,8 @@ export function ContactForm() {
           rows={5}
           className={`min-h-[120px] w-full resize-none rounded-[10px] bg-[#F3F3F3] px-4 py-3 text-[15px] text-[#666161] outline-none transition-all duration-150 focus:ring-2 ${
             errors.message
-              ? "ring-2 ring-red-500 focus:ring-red-500"
-              : "ring-0 focus:ring-[#181711]"
+              ? 'ring-2 ring-red-500 focus:ring-red-500'
+              : 'ring-0 focus:ring-[#181711]'
           }`}
         />
         <FieldError message={errors.message} />
@@ -232,8 +241,8 @@ export function ContactForm() {
         className="min-h-[48px] w-full rounded-xl font-medium text-white transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60 sm:min-h-[50px]"
         style={{ backgroundColor: PRIMARY }}
       >
-        {isSubmitting ? "Sending..." : "Send Message"}
+        {isSubmitting ? 'Sending...' : 'Send Message'}
       </button>
     </form>
-  )
+  );
 }

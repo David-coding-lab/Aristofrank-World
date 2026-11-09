@@ -1,42 +1,36 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import NavLinks from "@/components/ui/NavLinks"
-import Cards from "@/components/features/events/Card"
-import type { EventSummary } from "@/lib/content/types"
+import { useState } from 'react';
+import NavLinks from '@/components/ui/NavLinks';
+import Cards from '@/components/features/events/Card';
+import type { EventSummary } from '@/lib/content/types';
 
 interface EventCardProps {
-  events: EventSummary[]
+  events: EventSummary[];
 }
 
-const EVENTS_PER_PAGE = 6
+const EVENTS_PER_PAGE = 6;
 
 function EventCard({ events }: EventCardProps) {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(events.length / EVENTS_PER_PAGE)
+  const totalPages = Math.ceil(events.length / EVENTS_PER_PAGE);
 
-  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE
-  const visibleEvents = events.slice(
-    startIndex,
-    startIndex + EVENTS_PER_PAGE
-  )
+  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+  const visibleEvents = events.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
   if (visibleEvents.length === 0) {
     return (
       <p className="mx-auto max-w-7xl px-4 py-12 text-center text-sand">
         No upcoming events at the moment.
       </p>
-    )
+    );
   }
 
   return (
     <section className="w-full">
       <div className="flex justify-start">
-        <NavLinks
-          links={["All", "Music", "Masterclass", "Experience"]}
-          defaultActive="All"
-        />
+        <NavLinks links={['All', 'Music', 'Masterclass', 'Experience']} defaultActive="All" />
       </div>
 
       <div
@@ -49,10 +43,10 @@ function EventCard({ events }: EventCardProps) {
           <Cards
             key={event.id}
             eventImage={event.coverImage}
-            eventDate={new Date(event.date).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
+            eventDate={new Date(event.date).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
             })}
             eventTitle={event.title}
             eventDescription={event.description}
@@ -71,9 +65,7 @@ function EventCard({ events }: EventCardProps) {
         >
           <button
             type="button"
-            onClick={() =>
-              setCurrentPage((page) => Math.max(1, page - 1))
-            }
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
             disabled={currentPage === 1}
             className="rounded-md border border-[#393628] px-3 py-2
               text-sm text-white transition-colors
@@ -84,34 +76,28 @@ function EventCard({ events }: EventCardProps) {
           </button>
 
           {Array.from({ length: totalPages }, (_, index) => {
-            const page = index + 1
-            const isActive = currentPage === page
+            const page = index + 1;
+            const isActive = currentPage === page;
 
             return (
               <button
                 key={page}
                 type="button"
                 onClick={() => setCurrentPage(page)}
-                aria-current={isActive ? "page" : undefined}
+                aria-current={isActive ? 'page' : undefined}
                 className={`min-w-10 rounded-md px-3 py-2
                   text-sm font-semibold transition-colors ${
-                    isActive
-                      ? "bg-accent text-primary"
-                      : "text-white hover:bg-[#393628]"
+                    isActive ? 'bg-accent text-primary' : 'text-white hover:bg-[#393628]'
                   }`}
               >
                 {page}
               </button>
-            )
+            );
           })}
 
           <button
             type="button"
-            onClick={() =>
-              setCurrentPage((page) =>
-                Math.min(totalPages, page + 1)
-              )
-            }
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
             disabled={currentPage === totalPages}
             className="rounded-md border border-[#393628] px-3 py-2
               text-sm text-white transition-colors
@@ -123,7 +109,7 @@ function EventCard({ events }: EventCardProps) {
         </nav>
       )}
     </section>
-  )
+  );
 }
 
-export default EventCard
+export default EventCard;

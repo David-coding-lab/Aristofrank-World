@@ -1,21 +1,21 @@
-import type { Metadata } from "next"
-import { SiteHeader } from "@/components/features/layout/SiteHeader"
-import { SiteFooter } from "@/components/features/layout/SiteFooter"
-import LoadMoreArtists from "@/components/features/artist/LoadMoreArtists"
-import CTASection from "@/components/ui/CTASection"
-import NavLinks from "@/components/ui/NavLinks"
-import { getArtists } from "@/lib/content/artists"
-import { pageMetadata } from "@/lib/seo"
+import type { Metadata } from 'next';
+import { SiteHeader } from '@/components/features/layout/SiteHeader';
+import { SiteFooter } from '@/components/features/layout/SiteFooter';
+import LoadMoreArtists from '@/components/features/artist/LoadMoreArtists';
+import CTASection from '@/components/ui/CTASection';
+import NavLinks from '@/components/ui/NavLinks';
+import { getArtists } from '@/lib/content/artists';
+import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
-  title: "Artists",
+  title: 'Artists',
   description:
-    "Meet the artists, songwriters, producers, and visual talent represented by Aristofrank World.",
-  path: "/artist",
-})
+    'Meet the artists, songwriters, producers, and visual talent represented by Aristofrank World.',
+  path: '/artist',
+});
 
 export default async function ArtistsPage() {
-  const artists = await getArtists()
+  const artists = await getArtists();
 
   return (
     <div className="w-full h-fit bg-primary ">
@@ -47,10 +47,7 @@ export default async function ArtistsPage() {
         </p>
 
         <div className="mt-10 mb-12 flex w-full justify-start sm:mt-12 sm:mb-16">
-          <NavLinks
-            links={["All", "Afrobeats", "R&B", "Hip-Hop"]}
-            defaultActive="All"
-          />
+          <NavLinks links={['All', 'Afrobeats', 'R&B', 'Hip-Hop']} defaultActive="All" />
         </div>
       </section>
 
@@ -62,5 +59,5 @@ export default async function ArtistsPage() {
 
       <SiteFooter />
     </div>
-  )
+  );
 }

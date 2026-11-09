@@ -1,32 +1,32 @@
-"use client"
+'use client';
 
-import { useRef, useState } from "react"
-import VideoPlayer from "./VideoPlayer"
-import VideoFrame from "./VideoFrame"
+import { useRef, useState } from 'react';
+import VideoPlayer from './VideoPlayer';
+import VideoFrame from './VideoFrame';
 
 interface VideoItem {
-  thumbnailUrl: string
-  videoUrl: string
-  title?: string
+  thumbnailUrl: string;
+  videoUrl: string;
+  title?: string;
 }
 
 interface VideoShowcaseProps {
-  videos: VideoItem[]
+  videos: VideoItem[];
 }
 
 function VideoShowcase({ videos }: VideoShowcaseProps) {
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [autoPlay, setAutoPlay] = useState(false)
-  const playerRef = useRef<HTMLDivElement>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(false);
+  const playerRef = useRef<HTMLDivElement>(null);
 
-  const selected = videos[selectedIndex]
-  if (!selected) return null
+  const selected = videos[selectedIndex];
+  if (!selected) return null;
 
   const handleSelect = (index: number) => {
-    setSelectedIndex(index)
-    setAutoPlay(true)
-    playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
-  }
+    setSelectedIndex(index);
+    setAutoPlay(true);
+    playerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   return (
     <div className="flex w-full min-w-0 flex-col items-center">
@@ -64,7 +64,7 @@ function VideoShowcase({ videos }: VideoShowcaseProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default VideoShowcase
+export default VideoShowcase;
