@@ -13,15 +13,14 @@ export function ArtistJsonLd({ artist }: ArtistJsonLdProps) {
     "@type": "Person",
     name: artist.name,
     description: artist.bio,
-    image: artist.imageUrl,
-    url: `${base}/artist/${artist.slug}`,
-    jobTitle: artist.roles,
+    image: artist.profileImage,
+    url: `${base}${artist.profileUrl}`,
+    jobTitle: artist.genre.join(", "),
     worksFor: {
       "@type": "Organization",
       name: "Aristofrank World",
       url: base,
     },
-    ...(artist.socialLinks.length > 0 ? { sameAs: artist.socialLinks } : {}),
   }
 
   return (

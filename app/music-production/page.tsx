@@ -4,7 +4,8 @@ import MusicBanner from '@/components/features/music-production/MusicBanner'
 import RecentProjects from "@/components/features/music-production/RecentProjects";
 import Link from 'next/link'
 import ArtistsCard from '@/components/features/music-production/ArtistsCard'
-import { getTracks } from "@/lib/content/tracks"
+import { getMusic } from "@/lib/content/music"
+import { getArtists } from "@/lib/content/artists"
 import { pageMetadata } from "@/lib/seo"
 
 export const metadata = pageMetadata({
@@ -14,31 +15,10 @@ export const metadata = pageMetadata({
 })
 
 async function MusicProduction() {
-  const tracks = await getTracks(4)
-
-  const artists = [
-    {
-      id: 1,
-      name: "Luna",
-      roles: "Songwriter, Acoustic Singer, Gospel Singer",
-      image: "https://images.unsplash.com/photo-1765506255227-2feaa9bd58ec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-      link: "/artist/luna",
-    },
-    {
-      id: 2,
-      name: "David Okoro",
-      roles: "Producer, Mixing Engineer",
-      image: "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-      link: "/artist/david-okoro",
-    },
-    {
-      id: 3,
-      name: "Amara",
-      roles: "Vocalist, Songwriter",
-      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
-      link: "/artist/amara",
-    },
-  ];
+  const [music, artists] = await Promise.all([
+    getMusic(4),
+    getArtists(),
+  ])
 
   return (
     <div className="w-full h-fit bg-primary">
@@ -46,10 +26,10 @@ async function MusicProduction() {
 
         <main className="mx-auto max-w-6xl p-6">
             <MusicBanner
-                songName="Midnight Drive"
-                songDescription="Full track production for emerging artist 'Luna'. A blend of synth-wave and modern pop, crafted to make an impact."
-                songPlayLink="/productions/midnight-drive"
-                songImage="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+                songName={music[0]?.title ?? "Midnight Drive"}
+                songDescription={music[0]?.description ?? "Full track production for emerging artist. A blend of synth-wave and modern pop, crafted to make an impact."}
+                songPlayLink={music[0]?.artistProfileUrl ?? "/productions/midnight-drive"}
+                songImage={music[0]?.coverImage ?? "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"}
             />
         </main>
 
@@ -77,9 +57,9 @@ async function MusicProduction() {
                 <ArtistsCard
                     key={artist.id}
                     artistName={artist.name}
-                    artistRoles={artist.roles}
-                    artistImage={artist.image}
-                    artistLink={artist.link}
+                    artistRoles={artist.genre.join(", ")}
+                    artistImage={artist.profileImage}
+                    artistLink={artist.profileUrl}
                 />
             ))}
         </div>
@@ -95,7 +75,7 @@ async function MusicProduction() {
             </h3>        
         </div>
 
-        <RecentProjects tracks={tracks} />
+        <RecentProjects tracks={music} />
         <SiteFooter />
     </div>
   )

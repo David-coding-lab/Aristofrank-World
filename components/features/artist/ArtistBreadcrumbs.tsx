@@ -32,7 +32,7 @@ export function ArtistBreadcrumbs({
         "@type": "ListItem",
         position: 3,
         name: artistName,
-        item: `${base}/artist/${artistSlug}`,
+        item: `${base}${artistSlug}`,
       },
     ],
   }

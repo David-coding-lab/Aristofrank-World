@@ -3,17 +3,10 @@
 
 import { useState } from "react";
 import ArtistCard from "@/components/ui/ArtistCard";
-
-interface Artist {
-  id: string;
-  artistName: string;
-  artistSongStyle: string;
-  profileLink: string;
-  imageUrl: string;
-}
+import type { ArtistSummary } from "@/lib/content/types";
 
 interface LoadMoreArtistsProps {
-  artists: Artist[];
+  artists: ArtistSummary[];
 }
 
 export default function LoadMoreArtists({
@@ -31,10 +24,10 @@ export default function LoadMoreArtists({
         {artists.slice(0, visibleCount).map((artist) => (
           <ArtistCard
             key={artist.id}
-            artistName={artist.artistName}
-            artistSongStyle={artist.artistSongStyle}
-            profileLink={artist.profileLink}
-            imageUrl={artist.imageUrl}
+            artistName={artist.name}
+            artistSongStyle={artist.genre.join(", ")}
+            profileLink={artist.profileUrl}
+            imageUrl={artist.profileImage}
           />
         ))}
       </div>

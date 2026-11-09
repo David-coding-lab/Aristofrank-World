@@ -3,26 +3,17 @@ import "server-only"
 import { isDatabaseConfigured, prisma } from "@/lib/prisma"
 import type { MediaSummary } from "./types"
 
-export async function getMediaPosts(): Promise<MediaSummary[]> {
+export async function getMedia(): Promise<MediaSummary[]> {
   if (!isDatabaseConfigured) return []
 
-  const posts = await prisma.mediaPost.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: { publishedAt: "desc" },
+  return prisma.media.findMany({
+    orderBy: [{ createdAt: "desc" }],
     select: {
       id: true,
-      slug: true,
       title: true,
-      excerpt: true,
-      coverUrl: true,
-      videoUrl: true,
+      thumbnailImage: true,
+      sourceUrl: true,
       category: true,
-      publishedAt: true,
     },
   })
-
-  return posts.map((post) => ({
-    ...post,
-    publishedAt: post.publishedAt.toISOString(),
-  }))
 }

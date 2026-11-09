@@ -34,7 +34,7 @@ function EventCard({ events }: EventCardProps) {
     <section className="w-full">
       <div className="flex justify-start">
         <NavLinks
-          links={["All", "News", "Opinion", "Culture"]}
+          links={["All", "Music", "Masterclass", "Experience"]}
           defaultActive="All"
         />
       </div>
@@ -48,12 +48,17 @@ function EventCard({ events }: EventCardProps) {
         {visibleEvents.map((event) => (
           <Cards
             key={event.id}
-            eventImage={event.imageUrl}
-            eventDate={event.formattedDate ?? new Date(event.startsAt).toDateString()}
+            eventImage={event.coverImage}
+            eventDate={new Date(event.date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
             eventTitle={event.title}
             eventDescription={event.description}
-            eventLocation={`${event.venue}, ${event.city}`}
-            ticketUrl={event.ticketUrl ?? undefined}
+            eventLocation={event.location}
+            ticketPrice={event.ticketPrice}
+            availableTickets={event.availableTickets}
           />
         ))}
       </div>

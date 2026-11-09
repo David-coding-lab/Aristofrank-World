@@ -7,6 +7,16 @@ interface ProfileBannerProps {
   artistSongStyle: string
 }
 
+/** Escape user-controlled text to prevent XSS when rendering bio content. */
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+}
+
 function ProfileBanner({
   artistName,
   artistDescription,
@@ -36,7 +46,7 @@ function ProfileBanner({
         </h1>
 
         <p className="mt-6 max-w-xl text-base font-semibold leading-relaxed text-neutral-400">
-          {artistDescription}
+          {escapeHtml(artistDescription)}
         </p>
       </div>
     </div>

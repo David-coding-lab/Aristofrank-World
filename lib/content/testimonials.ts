@@ -7,14 +7,13 @@ export async function getTestimonials(): Promise<TestimonialSummary[]> {
   if (!isDatabaseConfigured) return []
 
   return prisma.testimonial.findMany({
-    where: { featured: true },
-    orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+    orderBy: [{ rating: "desc" }, { createdAt: "asc" }],
     select: {
       id: true,
-      quote: true,
       name: true,
-      role: true,
+      comment: true,
       rating: true,
+      company: true,
     },
   })
 }

@@ -3,27 +3,25 @@ import "server-only"
 import { isDatabaseConfigured, prisma } from "@/lib/prisma"
 import type { EventSummary } from "./types"
 
-export async function getUpcomingEvents(): Promise<EventSummary[]> {
+export async function getEvents(): Promise<EventSummary[]> {
   if (!isDatabaseConfigured) return []
 
   const events = await prisma.event.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: { startsAt: "asc" },
+    orderBy: { date: "asc" },
     select: {
       id: true,
-      slug: true,
       title: true,
+      date: true,
       description: true,
-      imageUrl: true,
-      startsAt: true,
-      venue: true,
-      city: true,
-      ticketUrl: true,
+      location: true,
+      ticketPrice: true,
+      availableTickets: true,
+      coverImage: true,
     },
   })
 
   return events.map((event) => ({
     ...event,
-    startsAt: event.startsAt.toISOString(),
+    date: event.date.toISOString(),
   }))
 }

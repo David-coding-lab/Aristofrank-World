@@ -5,21 +5,21 @@ import TrackList, {
   type Track,
 } from "@/components/features/music-production/TrackList"
 import MusicPlayer from "@/components/features/music-production/MusicPlayer"
-import type { TrackSummary } from "@/lib/content/types"
+import type { MusicSummary } from "@/lib/content/types"
 
 interface RecentProjectsProps {
-  tracks: TrackSummary[]
+  tracks: MusicSummary[]
 }
 
 export default function RecentProjects({ tracks }: RecentProjectsProps) {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null)
 
-  const playerTracks: Track[] = tracks.map((track) => ({
-    id: track.id,
-    title: track.title,
-    artist: track.artistName,
-    cover: track.coverUrl,
-    duration: track.duration,
+  const playerTracks: Track[] = tracks.map((t) => ({
+    id: t.id,
+    title: t.title,
+    artist: "Artist",
+    cover: t.coverImage,
+    duration: t.duration,
   }))
 
   if (playerTracks.length === 0) {
@@ -32,11 +32,7 @@ export default function RecentProjects({ tracks }: RecentProjectsProps) {
 
   return (
     <div className="mx-auto max-w-6xl mb-20">
-      <MusicPlayer
-        track={currentTrack}
-        progress={35}
-        onClose={() => setCurrentTrack(null)}
-      />
+      <MusicPlayer track={currentTrack} progress={0} onClose={() => setCurrentTrack(null)} />
       <TrackList tracks={playerTracks} onSelectTrack={setCurrentTrack} />
     </div>
   )

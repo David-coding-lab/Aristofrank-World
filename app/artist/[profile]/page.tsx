@@ -4,13 +4,14 @@ import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/features/layout/SiteHeader"
 import { SiteFooter } from "@/components/features/layout/SiteFooter"
 import ProfileBanner from "@/app/artist/[profile]/components/ProfileBanner"
-import RecentProjects from "@/components/features/music-production/RecentProjects"
+import MusicPlayer from "@/components/features/music-production/MusicPlayer"
+import TrackList from "@/components/features/music-production/TrackList"
 import ArtistsCard from "@/components/features/music-production/ArtistsCard"
 import CTASection from "@/components/ui/CTASection"
 import { ArtistBreadcrumbs } from "@/components/features/artist/ArtistBreadcrumbs"
 import { ArtistJsonLd } from "@/components/features/artist/ArtistJsonLd"
-import { getArtistBySlug, getRelatedArtists } from "@/lib/content/artists"
-import { getArtistTracks } from "@/lib/content/tracks"
+import { getArtistByProfileUrl, getRelatedArtists } from "@/lib/content/artists"
+import { getMusic } from "@/lib/content/music"
 import { pageMetadata, truncateDescription } from "@/lib/seo"
 
 interface ArtistProfilePageProps {
@@ -21,7 +22,7 @@ export async function generateMetadata({
   params,
 }: ArtistProfilePageProps): Promise<Metadata> {
   const { profile } = await params
-  const artist = await getArtistBySlug(profile)
+  const artist = await getArtistByProfileUrl(profile)
 
   if (!artist) {
     return {
@@ -33,9 +34,9 @@ export async function generateMetadata({
   return pageMetadata({
     title: artist.name,
     description: truncateDescription(artist.bio),
-    path: `/artist/${artist.slug}`,
-    imageUrl: artist.imageUrl,
-    imageAlt: `${artist.name} — ${artist.roles}`,
+    path: artist.profileUrl,
+    imageUrl: artist.profileImage,
+    imageAlt: `${artist.name} — ${artist.genre.join(", ")}`,
   })
 }
 
@@ -43,12 +44,12 @@ export default async function ArtistProfilePage({
   params,
 }: ArtistProfilePageProps) {
   const { profile } = await params
-  const artist = await getArtistBySlug(profile)
+  const artist = await getArtistByProfileUrl(profile)
 
   if (!artist) notFound()
 
-  const [tracks, relatedArtists] = await Promise.all([
-    getArtistTracks(artist.id),
+  const [music, relatedArtists] = await Promise.all([
+    getMusic(),
     getRelatedArtists(artist.id),
   ])
 
@@ -59,13 +60,13 @@ export default async function ArtistProfilePage({
       <main className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
         <ArtistBreadcrumbs
           artistName={artist.name}
-          artistSlug={artist.slug}
+          artistSlug={artist.profileUrl}
         />
         <ProfileBanner
           artistName={artist.name}
           artistDescription={artist.bio}
-          artistImage={artist.imageUrl}
-          artistSongStyle={artist.roles}
+          artistImage={artist.profileImage}
+          artistSongStyle={artist.genre.join(", ")}
         />
       </main>
 
@@ -75,7 +76,19 @@ export default async function ArtistProfilePage({
         </h2>
       </div>
 
-      <RecentProjects tracks={tracks} />
+      <div className="mx-auto max-w-6xl mb-20">
+        <MusicPlayer track={null} progress={0} onClose={() => {}} />
+        <TrackList
+          tracks={music.map((t) => ({
+            id: t.id,
+            title: t.title,
+            artist: artist.name,
+            cover: t.coverImage,
+            duration: t.duration,
+          }))}
+          onSelectTrack={() => {}}
+        />
+      </div>
 
       <div className="mx-auto mt-20 flex max-w-6xl items-center justify-between px-4 py-6 sm:px-6">
         <h2 className="font-['Open_Sans',sans-serif] text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-2xl">
@@ -92,11 +105,9 @@ export default async function ArtistProfilePage({
           <ArtistsCard
             key={related.id}
             artistName={related.name}
-            artistRoles={related.roles}
-            artistImage={related.imageUrl}
-            artistLink={
-              related.externalUrl ?? `/artist/${related.slug}`
-            }
+            artistRoles={related.genre.join(", ")}
+            artistImage={related.profileImage}
+            artistLink={related.profileUrl}
           />
         ))}
       </div>

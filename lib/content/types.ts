@@ -2,58 +2,66 @@
 
 export interface ArtistSummary {
   id: string
-  slug: string
   name: string
-  roles: string
-  imageUrl: string
-  externalUrl: string | null
+  genre: string[]
+  profileUrl: string
+  profileImage: string
 }
 
 export interface ArtistDetail extends ArtistSummary {
   bio: string
-  socialLinks: string[]
+}
+
+export interface MusicSummary {
+  id: string
+  title: string
+  description: string
+  audioUrl: string
+  coverImage: string
+  artistProfileUrl: string
+  duration: string
 }
 
 export interface TrackSummary {
   id: string
   title: string
-  artistName: string
-  coverUrl: string
-  audioUrl: string | null
+  artist: string
+  cover: string
   duration: string
-  description: string | null
 }
 
 export interface EventSummary {
   id: string
-  slug: string
   title: string
+  date: string
   description: string
-  imageUrl: string
-  startsAt: string
-  venue: string
-  city: string
-  ticketUrl: string | null
-  formattedDate?: string
+  location: string
+  ticketPrice: number
+  availableTickets: number
+  coverImage: string
 }
 
 export interface MediaSummary {
   id: string
-  slug: string
   title: string
-  excerpt: string
-  coverUrl: string
-  videoUrl: string | null
+  thumbnailImage: string
+  sourceUrl: string
   category: string
-  publishedAt: string
+}
+
+export interface VideoSummary {
+  id: string
+  title: string
+  thumbnailImage: string
+  videoUrl: string
 }
 
 export interface TestimonialSummary {
   id: string
-  quote: string
   name: string
-  role: string
+  comment: string
   rating: number
+  company: string | null
 }
 
 export interface TeamMemberSummary {

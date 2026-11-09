@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next"
 import { siteUrl } from "@/lib/env"
 import { isDatabaseConfigured } from "@/lib/prisma"
 import { getArtists } from "@/lib/content/artists"
-import { getUpcomingEvents } from "@/lib/content/events"
-import { getMediaPosts } from "@/lib/content/media"
+import { getEvents } from "@/lib/content/events"
+import { getMedia } from "@/lib/content/media"
+import type { ArtistSummary, EventSummary, MediaSummary } from "@/lib/content/types"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl || "http://localhost:3000"
@@ -60,16 +61,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  let artists: Array<{ slug: string }> = []
-  let events: Array<{ startsAt: string | Date }> = []
-  let mediaPosts: Array<{ publishedAt: string | Date }> = []
+  let artists: ArtistSummary[] = []
+  let events: EventSummary[] = []
+  let mediaPosts: MediaSummary[] = []
 
   if (isDatabaseConfigured) {
     try {
       const [a, e, m] = await Promise.all([
         getArtists(),
-        getUpcomingEvents(),
-        getMediaPosts(),
+        getEvents(),
+        getMedia(),
       ])
       artists = a
       events = e
@@ -80,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const artistRoutes: MetadataRoute.Sitemap = artists.map((artist) => ({
-    url: `${base}/artist/${artist.slug}`,
+    url: `${base}${artist.profileUrl}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.7,
@@ -88,14 +89,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const eventRoutes: MetadataRoute.Sitemap = events.map((event) => ({
     url: `${base}/events`,
-    lastModified: new Date(event.startsAt),
+    lastModified: new Date(event.date),
     changeFrequency: "weekly" as const,
     priority: 0.6,
   }))
 
-  const mediaRoutes: MetadataRoute.Sitemap = mediaPosts.map((post) => ({
+  const mediaRoutes: MetadataRoute.Sitemap = mediaPosts.map(() => ({
     url: `${base}/media`,
-    lastModified: new Date(post.publishedAt),
+    lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,
   }))

@@ -2,7 +2,7 @@ import { SiteHeader } from "@/components/features/layout/SiteHeader"
 import { SiteFooter } from "@/components/features/layout/SiteFooter"
 import HeroSection from "@/components/ui/HeroSection"
 import EventCard from "@/components/features/events/EventCard"
-import { getUpcomingEvents } from "@/lib/content/events"
+import { getEvents } from "@/lib/content/events"
 import { pageMetadata } from "@/lib/seo"
 
 export const metadata = pageMetadata({
@@ -13,17 +13,7 @@ export const metadata = pageMetadata({
 })
 
 export default async function EventsPage() {
-  const events = await getUpcomingEvents()
-
-  // Pre-format dates on the server so client hydration matches exactly.
-  const eventsWithDates = events.map((event) => ({
-    ...event,
-    formattedDate: new Date(event.startsAt).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }),
-  }))
+  const events = await getEvents()
 
   return (
     <div className="w-full h-fit bg-primary">
@@ -46,7 +36,7 @@ export default async function EventsPage() {
         </h2>
 
         <div className="mt-5 mb-10">
-          <EventCard events={eventsWithDates} />
+          <EventCard events={events} />
         </div>
       </section>
       <SiteFooter />

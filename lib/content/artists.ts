@@ -6,29 +6,42 @@ import type { ArtistDetail, ArtistSummary } from "./types"
 
 const artistSummarySelect = {
   id: true,
-  slug: true,
   name: true,
-  roles: true,
-  imageUrl: true,
-  externalUrl: true,
+  genre: true,
+  profileUrl: true,
+  profileImage: true,
 } as const satisfies Prisma.ArtistSelect
 
-function socialLinksOf(value: Prisma.JsonValue | null): string[] {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return []
+function genreOf(value: Prisma.JsonValue | null): string[] {
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === "string")
+}
 
-  return Object.values(value).filter(
-    (entry): entry is string => typeof entry === "string" && entry.length > 0,
-  )
+function toArtistSummary(row: {
+  id: string
+  name: string
+  genre: Prisma.JsonValue | null
+  profileUrl: string
+  profileImage: string
+}): ArtistSummary {
+  return {
+    id: row.id,
+    name: row.name,
+    genre: genreOf(row.genre),
+    profileUrl: row.profileUrl,
+    profileImage: row.profileImage,
+  }
 }
 
 export async function getArtists(): Promise<ArtistSummary[]> {
   if (!isDatabaseConfigured) return []
 
-  return prisma.artist.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: [{ order: "asc" }, { name: "asc" }],
+  const rows = await prisma.artist.findMany({
+    orderBy: [{ name: "asc" }],
     select: artistSummarySelect,
   })
+
+  return rows.map(toArtistSummary)
 }
 
 export async function getFeaturedArtists(
@@ -36,40 +49,37 @@ export async function getFeaturedArtists(
 ): Promise<ArtistSummary[]> {
   if (!isDatabaseConfigured) return []
 
-  return prisma.artist.findMany({
-    where: { status: "PUBLISHED", featured: true },
-    orderBy: [{ order: "asc" }, { name: "asc" }],
+  const rows = await prisma.artist.findMany({
+    orderBy: [{ name: "asc" }],
     take: limit,
     select: artistSummarySelect,
   })
+
+  return rows.map(toArtistSummary)
 }
 
-export async function getArtistBySlug(
-  slug: string,
+export async function getArtistByProfileUrl(
+  profileUrl: string,
 ): Promise<ArtistDetail | null> {
   if (!isDatabaseConfigured) return null
 
   const artist = await prisma.artist.findUnique({
-    where: { slug },
+    where: { profileUrl },
     select: {
       ...artistSummarySelect,
       bio: true,
-      socialLinks: true,
-      status: true,
     },
   })
 
-  if (!artist || artist.status !== "PUBLISHED") return null
+  if (!artist) return null
 
   return {
     id: artist.id,
-    slug: artist.slug,
     name: artist.name,
-    roles: artist.roles,
-    imageUrl: artist.imageUrl,
-    externalUrl: artist.externalUrl,
+    genre: genreOf(artist.genre),
+    profileUrl: artist.profileUrl,
+    profileImage: artist.profileImage,
     bio: artist.bio,
-    socialLinks: socialLinksOf(artist.socialLinks),
   }
 }
 
@@ -79,10 +89,12 @@ export async function getRelatedArtists(
 ): Promise<ArtistSummary[]> {
   if (!isDatabaseConfigured) return []
 
-  return prisma.artist.findMany({
-    where: { status: "PUBLISHED", id: { not: excludeArtistId } },
-    orderBy: [{ order: "asc" }, { name: "asc" }],
+  const rows = await prisma.artist.findMany({
+    where: { id: { not: excludeArtistId } },
+    orderBy: [{ name: "asc" }],
     take: limit,
     select: artistSummarySelect,
   })
+
+  return rows.map(toArtistSummary)
 }

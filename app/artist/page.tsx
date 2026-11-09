@@ -15,13 +15,7 @@ export const metadata: Metadata = pageMetadata({
 })
 
 export default async function ArtistsPage() {
-  const artists = (await getArtists()).map((artist) => ({
-    id: artist.id,
-    artistName: artist.name,
-    artistSongStyle: artist.roles,
-    profileLink: artist.externalUrl ?? `/artist/${artist.slug}`,
-    imageUrl: artist.imageUrl,
-  }))
+  const artists = await getArtists()
 
   return (
     <div className="w-full h-fit bg-primary ">
@@ -54,7 +48,7 @@ export default async function ArtistsPage() {
 
         <div className="mt-10 mb-12 flex w-full justify-start sm:mt-12 sm:mb-16">
           <NavLinks
-            links={["All", "Gospel Singers", "Song Writer", "Pop Artist"]}
+            links={["All", "Afrobeats", "R&B", "Hip-Hop"]}
             defaultActive="All"
           />
         </div>

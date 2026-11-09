@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 
 interface EventCardProps {
   eventImage: string
@@ -9,7 +8,8 @@ interface EventCardProps {
   eventDate: string
   eventTitle: string
   eventLocation: string
-  ticketUrl?: string
+  ticketPrice?: number
+  availableTickets?: number
 }
 
 const Cards = ({
@@ -18,8 +18,11 @@ const Cards = ({
   eventDate,
   eventTitle,
   eventLocation,
-  ticketUrl,
+  ticketPrice,
+  availableTickets,
 }: EventCardProps) => {
+  const hasTickets = Boolean(ticketPrice && availableTickets && availableTickets > 0)
+
   return (
     <div className="flex h-full w-full flex-col overflow-hidden rounded-t-xl bg-[#211F10]">
       <div className="relative h-[190px] w-full">
@@ -57,22 +60,32 @@ const Cards = ({
           <span>{eventLocation}</span>
         </div>
 
-        {ticketUrl ? (
-          <Link
-            href={ticketUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="mt-4 flex items-center gap-2 font-['Open_Sans',sans-serif] text-sm text-[#74726D]">
+          <span
+            className="material-symbols-outlined text-[18px]"
+            aria-hidden="true"
+          >
+            attach_money
+          </span>
+          <span>
+            {hasTickets ? `NGN ${ticketPrice?.toLocaleString()}` : "Sold Out"}
+          </span>
+        </div>
+
+        {hasTickets ? (
+          <button
+            type="button"
             className="mt-4 w-full inline-flex min-h-[44px] items-center justify-center rounded-lg bg-accent px-4 py-3.5 font-['Open_Sans',sans-serif] text-sm font-semibold text-primary transition-opacity hover:opacity-85"
           >
-            Buy Ticket
-          </Link>
+            Buy Ticket — {availableTickets} left
+          </button>
         ) : (
           <button
             type="button"
             disabled
             className="mt-4 w-full cursor-not-allowed rounded-lg bg-white/10 px-4 py-3.5 font-['Open_Sans',sans-serif] text-sm font-semibold text-white/40"
           >
-            Tickets Soon
+            Sold Out
           </button>
         )}
       </div>

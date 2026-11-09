@@ -21,6 +21,19 @@ function Star() {
   )
 }
 
+/**
+ * Escape text for safe attribute/HTML rendering. Prevents XSS from
+ * user-controlled comment/name/company fields.
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+}
+
 export function TestimonialsCarousel({
   testimonials = [],
 }: TestimonialsCarouselProps) {
@@ -59,18 +72,20 @@ export function TestimonialsCarousel({
             </div>
 
             <blockquote className="mt-5 text-sm italic leading-relaxed text-white/80 sm:text-base">
-              &ldquo;{testimonial.quote}&rdquo;
+              &ldquo;{escapeHtml(testimonial.comment)}&rdquo;
             </blockquote>
 
             <hr className="my-6 border-white/10" />
 
             <figcaption>
               <p className="font-heading text-base font-semibold sm:text-lg">
-                {testimonial.name}
+                {escapeHtml(testimonial.name)}
               </p>
-              <p className="mt-0.5 text-xs text-white/50 sm:text-sm">
-                {testimonial.role}
-              </p>
+              {testimonial.company && (
+                <p className="mt-0.5 text-xs text-white/50 sm:text-sm">
+                  {escapeHtml(testimonial.company)}
+                </p>
+              )}
             </figcaption>
           </figure>
         ))}

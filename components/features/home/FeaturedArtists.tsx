@@ -27,8 +27,8 @@ export function FeaturedArtists({ artists }: FeaturedArtistsProps) {
 
         <div className="mt-12 grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {artists.map((artist) => {
-            const href = artist.externalUrl ?? `/artist/${artist.slug}`
-            const isExternal = Boolean(artist.externalUrl)
+            const href = artist.profileUrl
+            const isExternal = href.startsWith("http")
 
             return (
               <article key={artist.id} className="w-full max-w-[265px]">
@@ -40,8 +40,8 @@ export function FeaturedArtists({ artists }: FeaturedArtistsProps) {
                   className="group relative block h-[350px] w-full overflow-hidden rounded-[8px]"
                 >
                   <Image
-                    src={artist.imageUrl}
-                    alt={`${artist.name} — ${artist.roles}`}
+                    src={artist.profileImage}
+                    alt={`${artist.name} — ${artist.genre.join(", ")}`}
                     width={480}
                     height={640}
                     loading="lazy"
@@ -57,7 +57,7 @@ export function FeaturedArtists({ artists }: FeaturedArtistsProps) {
                       {artist.name}
                     </h3>
                     <p className="self-stretch font-body text-sm font-semibold text-[#808080]">
-                      {artist.roles}
+                      {artist.genre.join(", ")}
                     </p>
                     <span className="mt-2 inline-flex min-h-[44px] items-center gap-1.5 self-stretch font-body text-xs font-bold text-accent transition-colors group-hover:text-white">
                       View Profile
