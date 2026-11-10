@@ -79,7 +79,7 @@ export function SiteFooter() {
           <Link href="/" className="flex items-center gap-2.5">
             <BrandMark className="h-8 w-auto" />
             <span className="text-lg font-semibold tracking-tight text-white">
-              Aristofrank World
+              Richworld
             </span>
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/50">
@@ -139,7 +139,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/5 py-6 text-center text-xs text-white/40">
-        © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Aristofrank World. All
+        © <span suppressHydrationWarning>{new Date().getFullYear()}</span> Richworld. All
         rights reserved.
       </div>
     </footer>

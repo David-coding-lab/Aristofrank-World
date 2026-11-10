@@ -13,8 +13,8 @@ export function AuthBrandPanel() {
         href="/"
         className="absolute left-4 top-4 z-10 flex items-center gap-2 sm:left-6 sm:top-6 lg:left-8 lg:top-8"
       >
-        <Image src="/favicon.svg" alt="Aristofrank World logo" width={36} height={36} />
-        <span className="font-bold text-white text-lg tracking-tight">Aristofrank World</span>
+        <Image src="/favicon.svg" alt="Richworld logo" width={36} height={36} />
+        <span className="font-bold text-white text-lg tracking-tight">Richworld</span>
       </Link>
 
       {/* Brand message — centers on desktop, crops on mobile */}

@@ -8,7 +8,7 @@ import { getCurrentUser } from '@/lib/auth/session';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Profile — Aristofrank World',
+  title: 'Profile — Richworld',
   robots: { index: false, follow: false },
 };
 

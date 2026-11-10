@@ -111,7 +111,7 @@ is **not done** until every applicable item in this section is satisfied.
   and brand detail pages. Use the static `metadata` export only for truly static pages.
 - Every page exports a `title`, `description`, `openGraph`, and `twitter` block.
   Never leave these as defaults or empty.
-- Titles follow the pattern: `"<Entity Name> — Aristofrank World"`. Keep under 60 characters.
+- Titles follow the pattern: `"<Entity Name> — Richworld"`. Keep under 60 characters.
 - Descriptions are unique per page, written for the user, 120–155 characters.
   They are not tag dumps.
 - `openGraph.images` must include at least one image with explicit `width`, `height`,
@@ -124,7 +124,7 @@ is **not done** until every applicable item in this section is satisfied.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const artist = await getArtist(params.slug);
   return {
-    title: `${artist.name} — Aristofrank World`,
+    title: `${artist.name} — Richworld`,
     description: artist.seoDescription ?? artist.bio,
     alternates: { canonical: `/artists/${artist.slug}` },
     openGraph: {

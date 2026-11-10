@@ -73,7 +73,7 @@ export function SiteHeaderClient({ user }: SiteHeaderClientProps) {
       <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <BrandMark className="h-8 w-auto" />
-          <span className="text-lg font-semibold tracking-tight text-white">Aristofrank World</span>
+          <span className="text-lg font-semibold tracking-tight text-white">Richworld</span>
         </Link>
 
         <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">

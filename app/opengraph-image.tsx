@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Aristofrank World — Where Brands Become Legends';
+export const alt = 'Richworld — Where Brands Become Legends';
 
 /** Site-wide OG image: embeds the designed artwork in a 1200×630 canvas. */
 export default async function Image() {

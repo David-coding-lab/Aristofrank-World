@@ -23,7 +23,7 @@ export function HeroHeader() {
         <div className="flex justify-center">
           <Image
             src="/hero.png"
-            alt="Aristofrank World — creative agency and artist management"
+            alt="Richworld — creative agency and artist management"
             width={1024}
             height={1024}
             priority

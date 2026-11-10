@@ -45,7 +45,7 @@ export function ServicesSection() {
             >
               <Image
                 src={service.image}
-                alt={`${service.title} — Aristofrank World`}
+                alt={`${service.title} — Richworld`}
                 width={88}
                 height={86}
                 sizes="88px"

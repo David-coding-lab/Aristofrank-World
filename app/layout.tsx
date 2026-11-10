@@ -26,19 +26,19 @@ export function generateMetadata(): Metadata {
   return {
     metadataBase: siteUrl ? new URL(siteUrl) : undefined,
     title: {
-      default: 'Aristofrank World | Where Brands Become Legends',
-      template: '%s | Aristofrank World',
+      default: 'Richworld | Where Brands Become Legends',
+      template: '%s | Richworld',
     },
     description:
-      'Aristofrank World is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.',
+      'Richworld is a creative agency and artist management company helping brands and artists become legends through branding, visual identity, media production, music production, promotions, and strategic storytelling.',
     icons: {
       icon: { url: '/favicon.svg', type: 'image/svg+xml' },
     },
     openGraph: {
       type: 'website',
       locale: 'en_NG',
-      siteName: 'Aristofrank World',
-      title: 'Aristofrank World | Where Brands Become Legends',
+      siteName: 'Richworld',
+      title: 'Richworld | Where Brands Become Legends',
       description:
         'A premium creative agency and artist management company helping brands and artists become legends.',
     },

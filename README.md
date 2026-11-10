@@ -1,8 +1,8 @@
-# Aristofrank World
+# Richworld
 
 **Where Brands Become Legends.**
 
-Aristofrank World is a premium creative agency and artist management platform
+Richworld is a premium creative agency and artist management platform
 focused on building iconic brands through branding, visual identity, media
 production, music production, promotions, and talent representation.
 

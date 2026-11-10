@@ -6,7 +6,7 @@ const PRIMARY = '#181711';
 
 export const metadata: Metadata = {
   title: 'Check your email',
-  description: 'Verify your Aristofrank World account from the link we just emailed you.',
+  description: 'Verify your Richworld account from the link we just emailed you.',
   robots: { index: false, follow: false },
 };
 

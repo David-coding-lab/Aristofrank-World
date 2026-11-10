@@ -82,10 +82,10 @@ export async function sendVerificationEmail(input: {
 }): Promise<void> {
   await deliverEmail({
     to: input.to,
-    subject: 'Verify your email — Aristofrank World',
+    subject: 'Verify your email — Richworld',
     html: emailLayout({
       heading: `Welcome, ${input.name}`,
-      body: 'Confirm your email address to finish setting up your Aristofrank World account. This link expires in 24 hours.',
+      body: 'Confirm your email address to finish setting up your Richworld account. This link expires in 24 hours.',
       actionLabel: 'Verify email',
       actionUrl: input.url,
       footer: 'If you did not create this account, you can safely ignore this email.',
@@ -102,7 +102,7 @@ export async function sendPasswordResetEmail(input: {
 }): Promise<void> {
   await deliverEmail({
     to: input.to,
-    subject: 'Reset your password — Aristofrank World',
+    subject: 'Reset your password — Richworld',
     html: emailLayout({
       heading: `Reset your password, ${input.name}`,
       body: 'Use the link below to choose a new password. This link expires in 1 hour and can only be used once.',
@@ -156,13 +156,13 @@ export async function sendContactAutoReplyEmail(input: {
 }): Promise<void> {
   await deliverEmail({
     to: input.email,
-    subject: 'We received your message — Aristofrank World',
+    subject: 'We received your message — Richworld',
     html: `
       <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#181711">
         <h1 style="font-size:24px;margin:0 0 16px">Thanks for reaching out, ${escapeHtml(input.name)}</h1>
         <p style="font-size:16px;line-height:1.6;margin:0 0 24px">We&apos;ve received your inquiry and will get back to you within one business day.</p>
         <p style="margin:0 0 24px">
-          <a href="${input.siteUrl}" style="display:inline-block;background:#181711;color:#fff;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:600">Back to Aristofrank World</a>
+          <a href="${input.siteUrl}" style="display:inline-block;background:#181711;color:#fff;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:600">Back to Richworld</a>
         </p>
         <p style="font-size:13px;line-height:1.6;color:#666161;margin:0">If you didn&apos;t submit this form, you can safely ignore this email.</p>
       </div>

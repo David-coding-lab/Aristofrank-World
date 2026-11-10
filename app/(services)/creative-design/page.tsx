@@ -108,7 +108,7 @@ function CreativeDesign() {
                     md:text-xl
                     lg:text-[18px] lg:leading-[1.4]"
         >
-          At Aristofrank World, we believe creative design is more than aesthetics; it’s the visual
+          At Richworld, we believe creative design is more than aesthetics; it’s the visual
           soul of a brand. we craft strategic timeless and impact visual identities that don’t just
           capture attention - they build legacies.
         </p>

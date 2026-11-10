@@ -18,7 +18,7 @@ export function ArtistJsonLd({ artist }: ArtistJsonLdProps) {
     jobTitle: artist.genre.join(', '),
     worksFor: {
       '@type': 'Organization',
-      name: 'Aristofrank World',
+      name: 'Richworld',
       url: base,
     },
   };

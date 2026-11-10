@@ -10,7 +10,7 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata: Metadata = pageMetadata({
   title: 'Artists',
   description:
-    'Meet the artists, songwriters, producers, and visual talent represented by Aristofrank World.',
+    'Meet the artists, songwriters, producers, and visual talent represented by Richworld.',
   path: '/artist',
 });
 
@@ -43,7 +43,7 @@ export default async function ArtistsPage() {
             lg:leading-[1.4]
           "
         >
-          A curated roster of the icons represented by Aristofrank World.
+          A curated roster of the icons represented by Richworld.
         </p>
 
         <div className="mt-10 mb-12 flex w-full justify-start sm:mt-12 sm:mb-16">

@@ -75,7 +75,7 @@ function AboutUs() {
       name: "God's Power George",
       role: 'Graphics Designer',
       description:
-        'Aristofrank the visionary leader who started it all, with a passion for transforming brands into market leaders.',
+        'Richworld the visionary leader who started it all, with a passion for transforming brands into market leaders.',
     },
     {
       id: 2,

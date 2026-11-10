@@ -4,7 +4,7 @@ import { AuthBrandPanel } from '@/components/features/auth/AuthBrandPanel';
 import { ResetPasswordForm } from '@/components/features/auth/ResetPasswordForm';
 
 export const metadata: Metadata = {
-  title: 'Reset password — Aristofrank World',
+  title: 'Reset password — Richworld',
   robots: { index: false, follow: false },
 };
 

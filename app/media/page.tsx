@@ -7,7 +7,7 @@ import NavLinks from '@/components/ui/NavLinks';
 const videos = [
   {
     id: '1',
-    videoTitle: 'Aristofrank in Forbes: Redefining Brand Legacies',
+    videoTitle: 'Richworld in Forbes: Redefining Brand Legacies',
     videoThumbnailUrl:
       'https://images.unsplash.com/photo-1554200876-980213841c94?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
     videoUrl:

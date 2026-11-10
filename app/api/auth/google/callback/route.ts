@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     const email = normalizeEmail(parsedEmail.data);
-    const name = (profile.name?.trim() || email.split('@')[0] || 'Aristofrank user').slice(0, 128);
+    const name = (profile.name?.trim() || email.split('@')[0] || 'Richworld user').slice(0, 128);
 
     const user = await prisma.$transaction(async (tx) => {
       const linked = await tx.oAuthAccount.findUnique({
