@@ -14,7 +14,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "prepare": "husky",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "tsx prisma/seed.ts"
   },
   "packageManager": "pnpm@12.16.1",
   "dependencies": {
@@ -42,6 +43,7 @@
     "prettier": "^3.9.10",
     "prisma": "6.19.3",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
